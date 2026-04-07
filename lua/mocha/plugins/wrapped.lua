@@ -9,7 +9,7 @@ return {
       border = true, -- I recommend true for a cleaner look
     	path = "/home/mocha/Documents/amoeba/",
       size = {
-        width = 100,
+        width = 130,
         height = 30,
       },
       cap = {

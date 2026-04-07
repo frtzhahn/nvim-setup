@@ -44,14 +44,14 @@
 
 
 --gruvbox v2
--- return {
--- "xero/miasma.nvim",
--- lazy = false,
--- priority = 1000,
--- config = function()
--- 	vim.cmd("colorscheme miasma")
--- end,
--- }
+return {
+"xero/miasma.nvim",
+lazy = false,
+priority = 1000,
+config = function()
+	vim.cmd("colorscheme miasma")
+end,
+}
 
 
 --fleur theme
@@ -66,23 +66,23 @@
 
 
 -- material theme
-return {
-    "marko-cerovac/material.nvim",
-    lazy = false,
-    priority = 1000,
-    config = function()
-        -- Set your desired style here BEFORE loading the colorscheme.
-        -- Options: 'darker', 'lighter', 'oceanic', 'palenight', 'deep ocean'
-        vim.g.material_style = "deep ocean"
-        -- Optional: Call setup if you want to tweak specific UI elements later 
-        -- (like making the background transparent)
-        require('material').setup({
-            -- custom settings go here
-        })
-
-        vim.cmd("colorscheme material")
-    end,
-}
+-- return {
+--     "marko-cerovac/material.nvim",
+--     lazy = false,
+--     priority = 1000,
+--     config = function()
+--         -- Set your desired style here BEFORE loading the colorscheme.
+--         -- Options: 'darker', 'lighter', 'oceanic', 'palenight', 'deep ocean'
+--         vim.g.material_style = "deep ocean"
+--         -- Optional: Call setup if you want to tweak specific UI elements later 
+--         -- (like making the background transparent)
+--         require('material').setup({
+--             -- custom settings go here
+--         })
+--
+--         vim.cmd("colorscheme material")
+--     end,
+-- }
 
 
 -- nightfox theme
