@@ -12,7 +12,7 @@
 - **discord rpc:** [Cord.nvim](https://github.com/vyfor/cord.nvim)
 - **nvim wrapped (goated plugin made by [aikhe](https://github.com/aikhe)):** [nvim wrapped](https://github.com/aikhe/wrapped.nvim)
 - **preferred terminal:** [cake terminal](https://github.com/aikhe/cake.nvim)
-- **themes:** multiple options including Material, Catppuccin, read `themes.lua` for more options.
+- **themes:** multiple options including Material, Catppuccin, read `themes.lua` for more options
 
 ---
 
@@ -66,11 +66,11 @@ sudo pacman -S --needed neovim git curl wget unzip base-devel cmake ripgrep fd x
 ---
 
 ### setting up this config (Linux)
-- **clone the repo (you can follow this command or just clone the main branch)**
+- **clone this repo directly on `.config/nvim` dir**
    ```bash
-   git clone -b frtzhahn-crine-nvim https://github.com/aikhe/crine-nvim.git ~/.config/nvim
+   git clone https://github.com/frtzhahn/nvim-setup.git ~/.config/nvim
    ```
-- **launch nvim**
+- **launch nvim on your terminal**
    ```bash
    nvim
    ```
@@ -80,10 +80,10 @@ sudo pacman -S --needed neovim git curl wget unzip base-devel cmake ripgrep fd x
 
 ### setting up this config (winslop 10/11)
 
-- clone the repo (you can follow this command or just clone the main branch)
+- create a dir to store the config files and clone the repo inside of it
     ```powershell
     mkdir $env:LOCALAPPDATA\nvim -Force
-    git clone -b frtzhahn-crine-nvim https://github.com/aikhe/crine-nvim.git $env:LOCALAPPDATA\nvim
+    git clone https://github.com/frtzhahn/nvim-setup.git $env:LOCALAPPDATA\nvim
     ```  
 
 
@@ -105,5 +105,5 @@ sudo pacman -S --needed neovim git curl wget unzip base-devel cmake ripgrep fd x
 
 # Showcase
 
-![nvim-sample](assets/nvim-sample.webp)
+![Image](https://github.com/user-attachments/assets/67e45217-ddbb-4733-81c3-eee36a6b726a)
 
