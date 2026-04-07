@@ -101,5 +101,9 @@ sudo pacman -S --needed neovim git curl wget unzip base-devel cmake ripgrep fd x
 >[!IMPORTANT]
 >review/read the keybinds on this set up for smoother experience
 
+---
 
+# Showcase
+
+![nvim-sample](assets/nvim-sample.webp)
 
