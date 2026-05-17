@@ -1,5 +1,13 @@
+-- Polyfill for Telescope/Treesitter compatibility in Neovim 0.12+
+if not vim.treesitter.language.ft_to_lang then
+  vim.treesitter.language.ft_to_lang = function(ft)
+    return vim.treesitter.language.get_lang(ft) or ft
+  end
+end
+
 require 'mocha.options'
 require 'mocha.keymaps'
+vim.opt.mouse = ""
 
 -- =============================
 -- Lazy Package Manager
@@ -22,7 +30,7 @@ require('lazy').setup({
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
-    branch = '0.1.x',
+    branch = 'master',
     dependencies = {
       'nvim-lua/plenary.nvim',
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -134,6 +142,13 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
+			local map = vim.keymap.set
+			-- [[ Window Navigation for Systems Mastery ]]
+			map('n', '<leader>wh', '<C-w>h', { desc = 'Move focus [W]indow [H]eft (Left)' })
+			map('n', '<leader>wl', '<C-w>l', { desc = 'Move focus [W]indow [L]ight (Right)' })
+			map('n', '<leader>wk', '<C-w>k', { desc = 'Move focus [W]indow [K]up (Up)' })
+			map('n', '<leader>wj', '<C-w>j', { desc = 'Move focus [W]indow [J]own (Down)' })
+
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
@@ -191,6 +206,8 @@ require('lazy').setup({
   require 'mocha.plugins.live-server',
   require 'mocha.plugins.cake',
   require 'mocha.plugins.wrapped',
+  require 'mocha.plugins.dap',
+  require 'mocha.plugins.treesitter',
 })
 
 
@@ -271,16 +288,20 @@ map('n', '<Leader>vs', ':vnew<CR>', opts)
 vim.api.nvim_set_option("clipboard", "unnamedplus")
 
 
-
+	-- [[ ARCHITECTURAL POLYFILL ]]
+	-- Fixes Telescope for Neovim 0.12+
+	vim.treesitter.ft_to_lang = function(ft)
+		return vim.treesitter.language.get_lang(ft) or ft
+	end
 
 local map = vim.keymap.set
 
-map("n", "<F5>", function()
-    local file = vim.fn.expand("%:p")         -- full path
-    local filename = vim.fn.expand("%:t")     -- filename.ext
+map("n", "<F6>", function()
+    local file = vim.fn.expand("%:p")
+    local filename = vim.fn.expand("%:t")
     local filetype = vim.bo.filetype
-    local basename = vim.fn.expand("%:t:r")   -- filename only
-    local dir = vim.fn.fnamemodify(file, ":h") -- directory
+    local basename = vim.fn.expand("%:t:r")
+    local dir = vim.fn.fnamemodify(file, ":h")
 
     if filename == "" then
         print("Save the file first.")
@@ -289,95 +310,29 @@ map("n", "<F5>", function()
 
     local cmd = nil
 
-    ---------------------------------------------------------
-    -- JAVA
-    ---------------------------------------------------------
     if filetype == "java" then
-        cmd = string.format(
-            'konsole --noclose -e sh -c "cd %s && clear && javac %s && java %s; exec zsh"',
-            dir, filename, basename
-        )
-
-    ---------------------------------------------------------
-    -- C
-    ---------------------------------------------------------
+        cmd = string.format('kitty --hold sh -c "cd %s && javac %s && java %s"', dir, filename, basename)
     elseif filetype == "c" then
-        cmd = string.format(
-            'konsole --noclose -e sh -c "cd %s && clear && gcc %s -o %s && ./%s; exec zsh"',
-            dir, filename, basename, basename
-        )
-
-    ---------------------------------------------------------
-    -- C++
-    ---------------------------------------------------------
+        cmd = string.format('kitty --hold sh -c "cd %s && gcc %s -o %s && ./%s"', dir, filename, basename, basename)
     elseif filetype == "cpp" then
-        cmd = string.format(
-            'konsole --noclose -e sh -c "cd %s && clear && g++ %s -o %s && ./%s; exec zsh"',
-            dir, filename, basename, basename
-        )
-
-    ---------------------------------------------------------
-    -- PYTHON
-    ---------------------------------------------------------
+        cmd = string.format('kitty --hold sh -c "cd %s && g++ %s -o %s && ./%s"', dir, filename, basename, basename)
     elseif filetype == "python" then
-        cmd = string.format(
-            'konsole --noclose -e sh -c "cd %s && clear && python3 %s; exec zsh"',
-            dir, filename
-        )
-
-    ---------------------------------------------------------
-    -- JAVASCRIPT (node)
-    ---------------------------------------------------------
+        cmd = string.format('kitty --hold sh -c "python3 %s"', filename)
     elseif filetype == "javascript" then
-        cmd = string.format(
-            'konsole --noclose -e sh -c "cd %s && clear && node %s; exec zsh"',
-            dir, filename
-        )
-
-    ---------------------------------------------------------
-    -- TYPESCRIPT (ts-node)
-    ---------------------------------------------------------
+        cmd = string.format('kitty --hold sh -c "node %s"', filename)
     elseif filetype == "typescript" then
-        cmd = string.format(
-            'konsole --noclose -e sh -c "cd %s && clear && ts-node %s; exec zsh"',
-            dir, filename
-        )
-
-    ---------------------------------------------------------
-    -- BASH scripts
-    ---------------------------------------------------------
+        cmd = string.format('kitty --hold sh -c "ts-node %s"', filename)
     elseif filetype == "sh" then
-        cmd = string.format(
-            'konsole --noclose -e sh -c "cd %s && clear && bash %s; exec zsh"',
-            dir, filename
-        )
-
-    ---------------------------------------------------------
-    -- LUA
-    ---------------------------------------------------------
+        cmd = string.format('kitty --hold sh -c "bash %s"', filename)
     elseif filetype == "lua" then
-        cmd = string.format(
-            'konsole --noclose -e sh -c "cd %s && clear && lua %s; exec zsh"',
-            dir, filename
-        )
-
-    ---------------------------------------------------------
-    -- GO
-    ---------------------------------------------------------
+        cmd = string.format('kitty --hold sh -c "lua %s"', filename)
     elseif filetype == "go" then
-        cmd = string.format(
-            'konsole --noclose -e sh -c "cd %s && clear && go run %s; exec zsh"',
-            dir, filename
-        )
-
+        cmd = string.format('kitty --hold sh -c "go run %s"', filename)
     else
         print("Unsupported filetype: " .. filetype)
         return
     end
-	
     vim.fn.jobstart({"sh", "-c", cmd})
-
-    --vim.fn.jobstart(cmd)   -- launch Konsole
 end)
 
 
