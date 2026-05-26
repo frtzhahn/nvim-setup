@@ -147,12 +147,9 @@
 
 
 --option 3
---
-
 return {
   {
     'vyfor/cord.nvim',
-    build = './build',
     event = 'VeryLazy',
     opts = {
       log_level = 'error',
@@ -164,16 +161,32 @@ return {
       },
 
       display = {
-        theme = 'catppuccin', 
+        theme = 'minecraft',
         flavor = 'accent',
+
+        -- theme = 'minecraft',
+        -- flavor = 'dark',
+
+        -- theme = 'catppuccin', 
+        -- flavor = 'accent',
+
+        -- theme = 'atom',
+        -- flavor = 'dark',
+
+        -- theme = 'void',
+        -- flavor = 'accent',
+
+        -- theme = 'classic',
+        -- flavor = 'dark',
+
         swap_fields = false, 
-        swap_icons = true,   
+        swap_icons = false,   
       },
 
       timestamp = {
         enabled = true,
-        reset_on_idle = false,   -- Persistence: ON
-        reset_on_change = false, -- Persistence: ON
+        reset_on_idle = false,  
+        reset_on_change = false, 
       },
 
       idle = {
@@ -205,7 +218,10 @@ return {
         workspace = function(opts) return 'Project: ' .. opts.workspace end,
         plugin_manager = 'Updating plugins...',
         vcs = 'Git Operations...',
-        -- REMOVED: lsp_manager (Invalid option caused warning)
+
+        -- lsp and diagnostics 
+        lsp = 'Configuring LSP...',
+        diagnostics = 'Fixing code diagnostics...',
       },
 
       buttons = {
@@ -215,13 +231,34 @@ return {
             return opts.repo_url or "https://github.com/frtzhahn" 
           end,
         },
+        -- Optional Second Button (Discord supports up to 2)
+        -- {
+        --   label = 'Send Coffee ☕',
+        --   url = 'https://github.com/sponsors/vyfor',
+        -- },
       },
+
+      -- Custom Event Hooks (Ready to be uncommented for system/editor alerts)
+      -- hooks = {
+      --   idle_enter = function(opts)
+      --     vim.notify("Cord: Entered idle mode", vim.log.levels.INFO)
+      --   end,
+      --   idle_leave = function(opts)
+      --     vim.notify("Cord: Returned to coding", vim.log.levels.INFO)
+      --   end,
+      -- },
 
       advanced = {
         plugin = {
           autocmds = true,
           cursor_update = 'on_hold',
           match_in_mappings = true,
+
+          -- Performance Throttle & Debouncer
+          debounce = {
+            delay = 50,      -- Wait 50ms for events to settle
+            interval = 750,  -- Limit IPC requests to once every 750ms
+          },
         },
         server = {
           update = 'fetch',
@@ -238,3 +275,50 @@ return {
     },
   },
 }
+
+
+-- option 4
+-- return {
+--   "IogaMaster/neocord",
+--   event = "VeryLazy",
+--   config = function()
+--     local neocord = require("neocord")
+--     neocord:setup({
+--       client_id           = "1157438221865717891",
+--       log_level           = "error",
+--       logo                = "auto",
+--       logo_tooltip        = "Better than any IDE you've used ꉂ(˵˃ ᗜ ˂˵)",
+--       main_image          = "language",
+--       editing_text        = "Editing %s",
+--       file_explorer_text  = "Browsing %s",
+--       plugin_manager_text = "Updating plugins...",
+--       reading_text        = "Reading %s",
+--       workspace_text      = "Project: %s",
+--       show_time           = true,
+--       global_timer        = true,
+--       buttons = {
+--         { label = "view my shit", url = "https://github.com/frtzhahn" },
+--       },
+--     })
+--
+--     -- 1. Disable / Clear Presence
+--     vim.api.nvim_create_user_command("NeocordDisable", function()
+--       vim.g.neocord_auto_update = 0
+--       neocord:cancel()
+--       vim.notify("Neocord: Presence Disabled", vim.log.levels.INFO)
+--     end, {})
+--
+--     -- 2. Enable / Reconnect Presence
+--     vim.api.nvim_create_user_command("NeocordEnable", function()
+--       vim.g.neocord_auto_update = 1
+--       neocord:update()
+--       vim.notify("Neocord: Presence Enabled", vim.log.levels.INFO)
+--     end, {})
+--
+--     -- 3. Force Idle Status (Simulated by clearing presence)
+--     vim.api.nvim_create_user_command("NeocordIdle", function()
+--       neocord:cancel()
+--       vim.notify("Neocord: Presence Cleared (Idle)", vim.log.levels.INFO)
+--     end, {})
+--   end,
+-- }
