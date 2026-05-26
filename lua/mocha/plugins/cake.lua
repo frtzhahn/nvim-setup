@@ -44,7 +44,7 @@ return {
     opts = {
       title = " cake.nvim",
       mode = "float", -- Default mode
-      size = { h = 60, w = 50 },
+      size = { h = 70, w = 60 },
       split = { w = 50, h = 25 }, -- New: Default split sizes
       mappings = {
         edit_commands = "m",

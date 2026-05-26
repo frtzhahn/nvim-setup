@@ -258,6 +258,13 @@ return {
           -- cmd = { ... },
           -- filetypes = { ... },
           -- capabilities = {},
+          root_dir = function(fname)
+            local root = require('lspconfig.util').root_pattern('.git', 'stylua.toml', '.stylua.toml', 'selene.toml', 'selene.yml', '.luarc.json', '.luarc.jsonc', 'init.lua')(fname)
+            if root == vim.env.HOME then
+              return nil
+            end
+            return root
+          end,
           settings = {
             Lua = {
               completion = {

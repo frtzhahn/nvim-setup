@@ -1,7 +1,7 @@
 -- wakatime plugin
 return {
     "wakatime/vim-wakatime",
-    event = "VeryLazy",
+    -- event = "VeryLazy",
     lazy = false,
 }
 

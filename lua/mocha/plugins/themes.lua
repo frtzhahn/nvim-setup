@@ -44,14 +44,14 @@
 
 
 --gruvbox v2
-return {
-"xero/miasma.nvim",
-lazy = false,
-priority = 1000,
-config = function()
-	vim.cmd("colorscheme miasma")
-end,
-}
+-- return {
+-- "xero/miasma.nvim",
+-- lazy = false,
+-- priority = 1000,
+-- config = function()
+-- 	vim.cmd("colorscheme miasma")
+-- end,
+-- }
 
 
 --fleur theme
@@ -73,7 +73,7 @@ end,
 --     config = function()
 --         -- Set your desired style here BEFORE loading the colorscheme.
 --         -- Options: 'darker', 'lighter', 'oceanic', 'palenight', 'deep ocean'
---         vim.g.material_style = "deep ocean"
+--         vim.g.material_style = "darker"
 --         -- Optional: Call setup if you want to tweak specific UI elements later 
 --         -- (like making the background transparent)
 --         require('material').setup({
@@ -86,25 +86,25 @@ end,
 
 
 -- nightfox theme
--- return {
---     "EdenEast/nightfox.nvim",
---     lazy = false,
---     priority = 1000,
---     config = function()
---         -- Optional: Call setup if you want to tweak specific UI elements later
---         -- (like enabling transparent backgrounds, changing styles for keywords, etc.)
---         require('nightfox').setup({
---             options = {
---                 -- transparent = true,
---             }
---         })
---
---         -- Set your desired style here by uncommenting the one you want.
---         -- Options: 'nightfox', 'dayfox', 'dawnfox', 'duskfox', 'nordfox', 'terafox', 'carbonfox'
---         -- vim.cmd("colorscheme nightfox")
---         vim.cmd("colorscheme duskfox")
---         -- vim.cmd("colorscheme carbonfox")
---         -- vim.cmd("colorscheme nordfox")
---         -- vim.cmd("colorscheme terafox")
---     end,
--- }
+return {
+    "EdenEast/nightfox.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+        -- Optional: Call setup if you want to tweak specific UI elements later
+        -- (like enabling transparent backgrounds, changing styles for keywords, etc.)
+        require('nightfox').setup({
+            options = {
+                transparent = true,
+            }
+        })
+
+        -- Set your desired style here by uncommenting the one you want.
+        -- Options: 'nightfox', 'dayfox', 'dawnfox', 'duskfox', 'nordfox', 'terafox', 'carbonfox'
+        vim.cmd("colorscheme nightfox")
+        -- vim.cmd("colorscheme duskfox")
+        -- vim.cmd("colorscheme carbonfox")
+        -- vim.cmd("colorscheme nordfox")
+        -- vim.cmd("colorscheme terafox")
+    end,
+}
