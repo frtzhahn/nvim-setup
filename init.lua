@@ -7,7 +7,7 @@ end
 
 require 'mocha.options'
 require 'mocha.keymaps'
-vim.opt.mouse = ""
+-- vim.opt.mouse = ""
 
 -- =============================
 -- Lazy Package Manager
@@ -208,6 +208,11 @@ require('lazy').setup({
   require 'mocha.plugins.wrapped',
   require 'mocha.plugins.dap',
   require 'mocha.plugins.treesitter',
+  require 'mocha.plugins.navic',
+  require 'mocha.plugins.trouble',
+  require 'mocha.plugins.surround',
+  require 'mocha.plugins.markdown',
+  require 'mocha.plugins.dashboard',
 })
 
 
