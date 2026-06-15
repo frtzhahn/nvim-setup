@@ -5,6 +5,16 @@ if not vim.treesitter.language.ft_to_lang then
   end
 end
 
+-- Automatically set the compiler environment variable for tree-sitter CLI on Windows
+if vim.fn.has("win32") == 1 then
+  -- If cl.exe is not in PATH, but gcc is available, fall back to gcc
+  if vim.fn.executable("cl") == 0 and vim.fn.executable("gcc") == 1 then
+    vim.env.CC = "gcc"
+  elseif vim.fn.executable("cl") == 0 and vim.fn.executable("clang") == 1 then
+    vim.env.CC = "clang"
+  end
+end
+
 require 'mocha.options'
 require 'mocha.keymaps'
 -- vim.opt.mouse = ""
