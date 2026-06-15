@@ -1,5 +1,7 @@
 # my nvim config
 
+![Image](https://github.com/user-attachments/assets/67e45217-ddbb-4733-81c3-eee36a6b726a)
+
 [aikhe](https://github.com/aikhe) helped me build this setup from scratch so you'd better checkout his own amazing set up as well https://github.com/aikhe/nvim-config
 
 ##  features
@@ -21,7 +23,8 @@
 install several core dependencies and runtimes.
 
 ### prerequisites
-- **neovim (0.10+):** must install for core functionality.
+- **neovim (0.12+):** required for modern Treesitter support (`main` branch).
+- **tree-sitter CLI:** required to compile Treesitter language parsers.
 - **nerd font:** for icons (my recommendation: [jetBrainsMono nerd font](https://github.com/ryanoasis/nerd-fonts).
 - **git & curl:** plugin and tool installation.
 - **ripgrep & FD :** fast searching.
@@ -58,9 +61,13 @@ sudo pacman -S --needed neovim git curl wget unzip base-devel cmake ripgrep fd x
    ```
 - **core tools**
    ```powershell
-   scoop install neovim git curl 7zip jq wget make gcc cmake ripgrep fd win32yank nodejs-lts python openjdk17-lts go lua
+   scoop install neovim git curl 7zip jq wget make gcc cmake ripgrep fd win32yank nodejs-lts python openjdk17-lts go lua tree-sitter
    npm install -g ts-node
    ```
+    > [!NOTE]
+    > - Ensure your Neovim is updated to **v0.12.0 or later** (if you already have it installed, run `scoop update neovim`).
+    > - Treesitter requires a C compiler to compile language parsers. This setup automatically configures Treesitter to fall back to `gcc` or `clang` on Windows if MSVC (`cl.exe`) is absent, so no heavy Visual Studio / MSVC installation is required.
+
 - **font setup:** open your terminal settings and set the font to any **nerd font**.
 
 ---
@@ -101,9 +108,6 @@ sudo pacman -S --needed neovim git curl wget unzip base-devel cmake ripgrep fd x
 >[!IMPORTANT]
 >review/read the keybinds on this set up for smoother experience
 
----
 
-# Showcase
 
-![Image](https://github.com/user-attachments/assets/67e45217-ddbb-4733-81c3-eee36a6b726a)
 
