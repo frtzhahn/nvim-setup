@@ -95,7 +95,7 @@ return {
         -- (like enabling transparent backgrounds, changing styles for keywords, etc.)
         require('nightfox').setup({
             options = {
-                transparent = true,
+                transparent = false,
             }
         })
 
