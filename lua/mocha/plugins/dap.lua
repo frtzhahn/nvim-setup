@@ -53,6 +53,29 @@ return {
           },
         }
       end
+
+			-- gdb config section
+
+			-- gdb adapter
+			dap.adapters.gdb = {
+				type = "executable",
+				command = "gdb",
+				args = { "-i", "dap" }
+			}
+
+			-- C debug launch options
+			dap.configurations.c = {
+				{
+					name = "Launch file",
+					type = "gdb",
+					request = "launch",
+					program = function()
+						return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+					end,
+					cwd = "${workspaceFolder}",
+					stopAtBeginningOfMainSubprogram = false,
+				},
+			}
     end,
   },
 }
