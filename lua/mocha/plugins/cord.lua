@@ -239,14 +239,14 @@ return {
       },
 
       -- Custom Event Hooks (Ready to be uncommented for system/editor alerts)
-      -- hooks = {
-      --   idle_enter = function(opts)
-      --     vim.notify("Cord: Entered idle mode", vim.log.levels.INFO)
-      --   end,
-      --   idle_leave = function(opts)
-      --     vim.notify("Cord: Returned to coding", vim.log.levels.INFO)
-      --   end,
-      -- },
+      hooks = {
+        idle_enter = function(opts)
+          vim.notify("Cord: Entered idle mode", vim.log.levels.INFO)
+        end,
+        idle_leave = function(opts)
+          vim.notify("Cord: Returned to coding", vim.log.levels.INFO)
+        end,
+      },
 
       advanced = {
         plugin = {

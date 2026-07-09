@@ -33,6 +33,12 @@ return {
       vim.keymap.set('n', '<F2>', dap.step_over, { desc = 'Debug: Step Over' })
       vim.keymap.set('n', '<F3>', dap.step_out, { desc = 'Debug: Step Out' })
       vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
+      vim.keymap.set('n', '<leader>B', function()
+        dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
+      end, { desc = 'Debug: Set Conditional Breakpoint' })
+      vim.keymap.set('n', '<leader>ku', dap.up, { desc = 'Debug: Up Stack Frame' })
+      vim.keymap.set('n', '<leader>kd', dap.down, { desc = 'Debug: Down Stack Frame' })
+
 
 			-- dap ui set up
       dapui.setup()
