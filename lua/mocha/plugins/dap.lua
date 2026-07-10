@@ -60,8 +60,6 @@ return {
         }
       end
 
-			-- gdb config section
-
 			-- Cross-platform terminal fallback setup
 			local function get_linux_terminal()
 				-- Prioritize Kitty since the user prefers it
@@ -75,6 +73,22 @@ return {
 				return { command = 'xterm', args = { '-e' } }
 			end
 
+<<<<<<< Updated upstream
+			-- Cross-platform terminal fallback setup
+			local function get_linux_terminal()
+				-- Prioritize Kitty since the user prefers it
+				if vim.fn.executable('kitty') == 1 then return { command = 'kitty', args = { '-e' } } end
+				if os.getenv("SWAYSOCK") then
+					if vim.fn.executable('alacritty') == 1 then return { command = 'alacritty', args = { '-e' } } end
+					if vim.fn.executable('foot') == 1 then return { command = 'foot', args = { '-e' } } end
+				end
+				if vim.fn.executable('konsole') == 1 then return { command = 'konsole', args = { '-e' } } end
+				if vim.fn.executable('alacritty') == 1 then return { command = 'alacritty', args = { '-e' } } end
+				return { command = 'xterm', args = { '-e' } }
+			end
+
+=======
+>>>>>>> Stashed changes
 			if vim.fn.has('win32') == 1 or vim.fn.has('win64') == 1 then
 				dap.defaults.fallback.external_terminal = {
 					command = 'cmd.exe',
@@ -115,6 +129,8 @@ return {
 				{
 					name = "Launch (CodeLLDB Built-in Console)",
 					type = "codelldb",
+<<<<<<< Updated upstream
+=======
 					request = "launch",
 					program = function()
 						return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
@@ -126,12 +142,35 @@ return {
 					cwd = "${workspaceFolder}",
 					stopOnEntry = false,
 				},
+				{
+					name = "Launch (GDB External Terminal)",
+					type = "gdb",
+>>>>>>> Stashed changes
+					request = "launch",
+					program = function()
+						return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+					end,
+					args = function()
+						local args_str = vim.fn.input('Arguments: ')
+						return vim.split(args_str, " +")
+					end,
+					cwd = "${workspaceFolder}",
+<<<<<<< Updated upstream
+					stopOnEntry = false,
+=======
+					stopAtBeginningOfMainSubprogram = false,
+					runInTerminal = true, -- Direct GDB to spawn the external TTY defined in fallback
+>>>>>>> Stashed changes
+				},
 			}
 
 			dap.configurations.cpp = c_cpp_configurations
 			dap.configurations.c = c_cpp_configurations
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
     end,
   },
 }
