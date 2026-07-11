@@ -187,22 +187,22 @@ return {
       end
 
 			-- 9. Visual Enhancements (Clean ASCII/Unicode Style)
-			   -- vim.api.nvim_set_hl(0, 'DapBreakpoint', { ctermbg = 0, fg = '#e06c75' }) -- Soft red
-			   -- vim.api.nvim_set_hl(0, 'DapLogPoint', { ctermbg = 0, fg = '#61afef' })   -- Light blue
-			   -- vim.api.nvim_set_hl(0, 'DapStopped', { ctermbg = 0, fg = '#98c379', bold = true }) -- Green
-			   --
-			   -- vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Simple clean dot
-			   -- vim.fn.sign_define('DapBreakpointCondition', { text = '', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Hollow dot
-			   -- vim.fn.sign_define('DapStopped', { text = '▶', texthl = 'DapStopped', linehl = 'Visual', numhl = 'DapStopped' }) -- Solid pointer arrow
+			   vim.api.nvim_set_hl(0, 'DapBreakpoint', { ctermbg = 0, fg = '#e06c75' }) -- Soft red
+			   vim.api.nvim_set_hl(0, 'DapLogPoint', { ctermbg = 0, fg = '#61afef' })   -- Light blue
+			   vim.api.nvim_set_hl(0, 'DapStopped', { ctermbg = 0, fg = '#98c379', bold = true }) -- Green
+
+			   vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Simple clean dot
+			   vim.fn.sign_define('DapBreakpointCondition', { text = '', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Hollow dot
+			   vim.fn.sign_define('DapStopped', { text = '▶', texthl = 'DapStopped', linehl = 'Visual', numhl = 'DapStopped' }) -- Solid pointer arrow
 
 			-- alternative option if no nerd font is configured
-			   vim.api.nvim_set_hl(0, 'DapBreakpoint', { ctermbg = 0, fg = '#992525' })
-			   vim.api.nvim_set_hl(0, 'DapLogPoint', { ctermbg = 0, fg = '#61afef' })
-			   vim.api.nvim_set_hl(0, 'DapStopped', { ctermbg = 0, fg = '#98c379', bold = true })
-
-				 vim.fn.sign_define('DapBreakpoint', { text = 'B', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Filled circle
-			   vim.fn.sign_define('DapBreakpointCondition', { text = 'BC', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Target/Nested circle
-			   vim.fn.sign_define('DapStopped', { text = '󰁕', texthl = 'DapStopped', linehl = 'Visual', numhl = 'DapStopped' }) -- Clean right arrow
+				 --  vim.api.nvim_set_hl(0, 'DapBreakpoint', { ctermbg = 0, fg = '#992525' })
+				 --  vim.api.nvim_set_hl(0, 'DapLogPoint', { ctermbg = 0, fg = '#61afef' })
+				 --  vim.api.nvim_set_hl(0, 'DapStopped', { ctermbg = 0, fg = '#98c379', bold = true })
+				 --
+				 -- vim.fn.sign_define('DapBreakpoint', { text = 'B', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Filled circle
+				 --  vim.fn.sign_define('DapBreakpointCondition', { text = 'BC', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Target/Nested circle
+				 --  vim.fn.sign_define('DapStopped', { text = '󰁕', texthl = 'DapStopped', linehl = 'Visual', numhl = 'DapStopped' }) -- Clean right arrow
     end,
   },
 }
