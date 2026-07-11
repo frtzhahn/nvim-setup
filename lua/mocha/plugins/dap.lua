@@ -15,7 +15,7 @@ return {
       -- 1. Setup Mason and dependency chains
       require('mason-nvim-dap').setup {
         automatic_installation = true,
-        ensure_installed = { 'js-debug-adapter' },
+        ensure_installed = { 'js-debug-adapter', 'codelldb' },
       }
 
       -- 2. js-debug-adapter configuration
@@ -133,6 +133,7 @@ return {
           args = get_args,
           cwd = "${workspaceFolder}",
           stopOnEntry = false,
+          terminal = "external",
         },
         {
           name = "Launch (GDB External Popup Window)",
@@ -167,17 +168,41 @@ return {
       vim.keymap.set('n', '<F1>', dap.step_into, { desc = 'Debug: Step Into' })
       vim.keymap.set('n', '<F2>', dap.step_over, { desc = 'Debug: Step Over' })
       vim.keymap.set('n', '<F3>', dap.step_out, { desc = 'Debug: Step Out' })
+      vim.keymap.set('n', '<F4>', dap.terminate, { desc = 'Debug: Terminate' })
       vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
       vim.keymap.set('n', '<leader>B', function()
         dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
       end, { desc = 'Debug: Set Conditional Breakpoint' })
       vim.keymap.set('n', '<leader>ku', dap.up, { desc = 'Debug: Up Stack Frame' })
       vim.keymap.set('n', '<leader>kd', dap.down, { desc = 'Debug: Down Stack Frame' })
+      vim.keymap.set('n', '<leader>du', dapui.toggle, { desc = 'Debug: Toggle UI' })
 
       dapui.setup()
       dap.listeners.after.event_initialized['dapui_config'] = dapui.open
-      dap.listeners.before.event_terminated['dapui_config'] = dapui.close
-      dap.listeners.before.event_exited['dapui_config'] = dapui.close
+      dap.listeners.before.event_terminated['dapui_config'] = function()
+        vim.notify("Debug Session Terminated")
+      end
+      dap.listeners.before.event_exited['dapui_config'] = function()
+        vim.notify("Debug Session Terminated")
+      end
+
+			-- 9. Visual Enhancements (Clean ASCII/Unicode Style)
+			   -- vim.api.nvim_set_hl(0, 'DapBreakpoint', { ctermbg = 0, fg = '#e06c75' }) -- Soft red
+			   -- vim.api.nvim_set_hl(0, 'DapLogPoint', { ctermbg = 0, fg = '#61afef' })   -- Light blue
+			   -- vim.api.nvim_set_hl(0, 'DapStopped', { ctermbg = 0, fg = '#98c379', bold = true }) -- Green
+			   --
+			   -- vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Simple clean dot
+			   -- vim.fn.sign_define('DapBreakpointCondition', { text = '', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Hollow dot
+			   -- vim.fn.sign_define('DapStopped', { text = '▶', texthl = 'DapStopped', linehl = 'Visual', numhl = 'DapStopped' }) -- Solid pointer arrow
+
+			-- alternative option if no nerd font is configured
+			   vim.api.nvim_set_hl(0, 'DapBreakpoint', { ctermbg = 0, fg = '#992525' })
+			   vim.api.nvim_set_hl(0, 'DapLogPoint', { ctermbg = 0, fg = '#61afef' })
+			   vim.api.nvim_set_hl(0, 'DapStopped', { ctermbg = 0, fg = '#98c379', bold = true })
+
+				 vim.fn.sign_define('DapBreakpoint', { text = 'B', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Filled circle
+			   vim.fn.sign_define('DapBreakpointCondition', { text = 'BC', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Target/Nested circle
+			   vim.fn.sign_define('DapStopped', { text = '󰁕', texthl = 'DapStopped', linehl = 'Visual', numhl = 'DapStopped' }) -- Clean right arrow
     end,
   },
 }
