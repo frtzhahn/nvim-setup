@@ -223,6 +223,7 @@ require('lazy').setup({
   require 'mocha.plugins.surround',
   require 'mocha.plugins.markdown',
   require 'mocha.plugins.dashboard',
+  require 'mocha.plugins.persistence',
 })
 
 
