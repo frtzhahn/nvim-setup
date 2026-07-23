@@ -224,6 +224,8 @@ require('lazy').setup({
   require 'mocha.plugins.markdown',
   require 'mocha.plugins.dashboard',
   require 'mocha.plugins.persistence',
+  require 'mocha.plugins.jdtls',
+  require 'mocha.plugins.csharp',
 })
 
 

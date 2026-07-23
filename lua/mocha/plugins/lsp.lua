@@ -290,7 +290,12 @@ return {
       --    :Mason
       --
       --  You can press `g?` for help in this menu.
-      require('mason').setup()
+      local mason_opts = {}
+      local lazy_config_ok, lazy_config = pcall(require, 'lazy.core.config')
+      if lazy_config_ok and lazy_config.plugins['mason.nvim'] then
+        mason_opts = lazy_config.plugins['mason.nvim'].opts or {}
+      end
+      require('mason').setup(mason_opts)
 
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
@@ -299,20 +304,24 @@ return {
         'stylua', -- Used to format Lua code
         'prettierd',
         'prettier',
+				'jdtls',
+				'java-debug-adapter',
+				'java-test',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+      -- 1. Manually loop over custom servers to register settings natively
+      for server_name, server_config in pairs(servers) do
+        local server = server_config or {}
+        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+        vim.lsp.config(server_name, server)
+      end
+
+      -- 2. Setup mason-lspconfig and exclude jdtls from automatic activation
       require('mason-lspconfig').setup {
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
+        automatic_enable = {
+          exclude = { 'jdtls', 'omnisharp' }
+        }
       }
     end,
   },

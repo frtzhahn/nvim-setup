@@ -15,7 +15,7 @@ return {
       -- 1. Setup Mason and dependency chains
       require('mason-nvim-dap').setup {
         automatic_installation = true,
-        ensure_installed = { 'js-debug-adapter', 'codelldb' },
+        ensure_installed = { 'js-debug-adapter', 'codelldb', 'netcoredbg' },
       }
 
       -- 2. js-debug-adapter configuration

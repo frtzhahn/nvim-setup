@@ -10,7 +10,7 @@ return {
       ts.install({
         'bash', 'c', 'diff', 'html', 'lua', 'markdown', 
         'markdown_inline', 'query', 'vim', 'vimdoc',
-        'javascript', 'typescript'
+        'javascript', 'typescript', 'java', 'c_sharp'
       })
       -- Enable Highlighting natively
       vim.api.nvim_create_autocmd('FileType', {
