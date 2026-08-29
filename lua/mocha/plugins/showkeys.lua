@@ -1,22 +1,8 @@
--- return {
--- 	"nvzone/showkeys",
--- 	event = "VimEnter",
--- 	opts = {
--- 		timeout = 1,
--- 		maxkeys = 4,
--- 		position = "top-right",
--- 		show_count = true,
--- 	},
--- 	config = function(_, opts)
--- 		require("showkeys").setup(opts)
--- 		require("showkeys").open()
--- 	end,
--- }
-
 return {
-	"nvzone/showkeys",
+	"frtzhahn/showkeys",
 	event = "VimEnter",
 	opts = {
+		autostart = true, -- opens automatically on startup
 		timeout = 1,
 		maxkeys = 3,
 		position = "top-right",
@@ -29,8 +15,4 @@ return {
 			inactive = { fg = "#c0c0c0", bg = "#383838" },
 		},
 	},
-	config = function(_, opts)
-		require("showkeys").setup(opts)
-		require("showkeys").open()
-	end,
 }
