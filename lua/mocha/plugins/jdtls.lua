@@ -9,8 +9,8 @@ return {
       local mason_path = vim.fn.stdpath('data') .. '/mason'
       local jdtls_bin = mason_path .. '/bin/jdtls'
 
-      -- Find project root (fallback to the containing directory for standalone files)
-      local root_dir = require('jdtls.setup').find_root({ '.git', 'pom.xml', 'gradlew' })
+      -- Find project root (prioritize build specs; fallback to local directory for standalone DSA exercises)
+      local root_dir = require('jdtls.setup').find_root({ 'pom.xml', 'gradlew', '.mvn' })
       if root_dir == "" or root_dir == nil then
         local current_file = vim.api.nvim_buf_get_name(0)
         if current_file ~= "" then

@@ -57,31 +57,31 @@ return {
       local function get_linux_terminal()
         if os.getenv("SWAYSOCK") then
           if vim.fn.executable('kitty') == 1 then
-            return { command = 'kitty', args = { '-e' } }
+            return { command = 'kitty', args = { '--hold', '-e' } }
           elseif vim.fn.executable('alacritty') == 1 then
-            return { command = 'alacritty', args = { '-e' } }
+            return { command = 'alacritty', args = { '--hold', '-e' } }
           elseif vim.fn.executable('foot') == 1 then
-            return { command = 'foot', args = { '-e' } }
+            return { command = 'foot', args = { 'sh', '-c', '"$@"; exec bash', 'sh' } }
           end
         end
 
-        -- If on KDE Plasma or as a generic Linux fallback, cleanly route to 'konsole' with {'-e'}
+        -- If on KDE Plasma or as a generic Linux fallback, cleanly route to 'konsole' with {'--noclose', '-e'}
         local is_kde = os.getenv("KDE_FULL_SESSION") or (os.getenv("XDG_CURRENT_DESKTOP") and string.find(string.lower(os.getenv("XDG_CURRENT_DESKTOP")), "kde"))
         if is_kde or not os.getenv("SWAYSOCK") then
           if vim.fn.executable('konsole') == 1 then
-            return { command = 'konsole', args = { '-e' } }
+            return { command = 'konsole', args = { '--noclose', '-e' } }
           end
         end
 
         -- General safety fallback list if konsole or the sway-specific terminal aren't found
         if vim.fn.executable('kitty') == 1 then
-          return { command = 'kitty', args = { '-e' } }
+          return { command = 'kitty', args = { '--hold', '-e' } }
         elseif vim.fn.executable('alacritty') == 1 then
-          return { command = 'alacritty', args = { '-e' } }
+          return { command = 'alacritty', args = { '--hold', '-e' } }
         elseif vim.fn.executable('foot') == 1 then
-          return { command = 'foot', args = { '-e' } }
+          return { command = 'foot', args = { 'sh', '-c', '"$@"; exec bash', 'sh' } }
         end
-        return { command = 'xterm', args = { '-e' } }
+        return { command = 'xterm', args = { '-hold', '-e' } }
       end
 
       if is_windows then
@@ -89,7 +89,7 @@ return {
       else
         dap.defaults.fallback.external_terminal = get_linux_terminal()
       end
-      dap.defaults.fallback.force_external_terminal = true
+      dap.defaults.fallback.force_external_terminal = false
 
       -- 5. FIXING ADAPTERS: Resolve strings synchronously *during* initialization block
       local ok, registry = pcall(require, "mason-registry")
