@@ -39,6 +39,11 @@ vim.opt.backspace = { "indent", "eol", "start" }
 
 vim.o.background = "dark"
 
+-- Command-line completion (native floating popup menu)
+vim.opt.wildmenu = true
+vim.opt.wildmode = "longest:full,full"
+vim.opt.wildoptions = "pum"
+
 -- Silence unused host providers to accelerate startup
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
