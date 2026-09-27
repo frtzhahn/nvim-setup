@@ -228,6 +228,8 @@ require("lazy").setup({
 	require("mocha.plugins.csharp"),
 	require("mocha.plugins.history"),
 	require("mocha.plugins.showkeys"),
+	require("mocha.plugins.typr"),
+	require("mocha.plugins.minty"),
 })
 
 --wakatime
@@ -260,27 +262,27 @@ map("n", "<Leader>tv", ":vsplit | terminal<CR>", opts)
 --   vim.cmd('terminal')
 -- end, opts)
 
-local float_term_win
-
-map("n", "<Leader>tf", function()
-	local buf = vim.api.nvim_create_buf(false, true)
-	float_term_win = vim.api.nvim_open_win(buf, true, {
-		relative = "editor",
-		width = math.floor(vim.o.columns * 0.8),
-		height = math.floor(vim.o.lines * 0.8),
-		row = math.floor(vim.o.lines * 0.1),
-		col = math.floor(vim.o.columns * 0.1),
-		style = "minimal",
-		border = "rounded",
-	})
-	vim.cmd("terminal")
-end, opts)
-
-map("n", "<Leader>tj", function()
-	if float_term_win and vim.api.nvim_win_is_valid(float_term_win) then
-		vim.api.nvim_set_current_win(float_term_win)
-	end
-end, opts)
+-- local float_term_win
+--
+-- map("n", "<Leader>tf", function()
+-- 	local buf = vim.api.nvim_create_buf(false, true)
+-- 	float_term_win = vim.api.nvim_open_win(buf, true, {
+-- 		relative = "editor",
+-- 		width = math.floor(vim.o.columns * 0.8),
+-- 		height = math.floor(vim.o.lines * 0.8),
+-- 		row = math.floor(vim.o.lines * 0.1),
+-- 		col = math.floor(vim.o.columns * 0.1),
+-- 		style = "minimal",
+-- 		border = "rounded",
+-- 	})
+-- 	vim.cmd("terminal")
+-- end, opts)
+--
+-- map("n", "<Leader>tj", function()
+-- 	if float_term_win and vim.api.nvim_win_is_valid(float_term_win) then
+-- 		vim.api.nvim_set_current_win(float_term_win)
+-- 	end
+-- end, opts)
 
 -- Navigate between splits (normal + terminal mode)
 map({ "n", "t" }, "<C-h>", "<C-\\><C-N><C-w>h", opts)

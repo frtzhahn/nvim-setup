@@ -7,7 +7,7 @@ return {
 		max_history = 10,
 		border = "rounded",
 		max_payload_size = 10 * 1024 * 1024,
-		syntax_highlight = true,
+		syntax_highlight = true, --treesitter
 		close_on_q = true,
 		storage_dir = nil,
 		window = {

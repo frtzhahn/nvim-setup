@@ -202,31 +202,31 @@ return {
 				editing = function(opts)
 					local is_modified = vim.bo.modified
 					if is_modified then
-						return string.format("Unsaved: %s", opts.filename)
+						-- return string.format("Unsaved: %s", opts.filename)
 					else
-						return string.format("Editing %s", opts.filename)
+						-- return string.format("Working on %s", opts.filename)
 					end
 				end,
 
 				file_browser = function(opts)
-					return "Browsing " .. opts.name
+					-- return "Browsing " .. opts.name
 				end,
 				workspace = function(opts)
-					return "Project: " .. opts.workspace
+					-- return "Project: " .. opts.workspace
 				end,
 				plugin_manager = "Updating plugins...",
 				vcs = "Git Operations...",
 
 				-- lsp and diagnostics
-				lsp = "Configuring LSP...",
-				diagnostics = "Fixing code diagnostics...",
+				lsp = "Configuring LSP",
+				diagnostics = "Fixing code diagnostics",
 			},
 
 			buttons = {
 				{
 					label = "view my shit",
 					url = function(opts)
-						return opts.repo_url or "https://github.com/frtzhahn"
+						return "https://github.com/frtzhahn" --add this if you want to add dir repo: url opts.repo_url or
 					end,
 				},
 				-- Optional Second Button (Discord supports up to 2)

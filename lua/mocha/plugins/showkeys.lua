@@ -7,7 +7,7 @@ return {
 		maxkeys = 3,
 		position = "top-right",
 		show_count = true,
-		theme = "tokyonight", -- "auto", "tokyonight", "catppuccin", "gruvbox", "nord", "rose-pine", "kanagawa", "dracula", "carbonfox"
+		theme = "gruvbox", -- "auto", "tokyonight", "catppuccin", "gruvbox", "nord", "rose-pine", "kanagawa", "dracula", "carbonfox"
 
 		-- personal pref
 		-- style = {
