@@ -4,6 +4,11 @@ if not vim.treesitter.language.ft_to_lang then
 		return vim.treesitter.language.get_lang(ft) or ft
 	end
 end
+if not vim.treesitter.ft_to_lang then
+	vim.treesitter.ft_to_lang = function(ft)
+		return vim.treesitter.language.get_lang(ft) or ft
+	end
+end
 
 -- Automatically set the compiler environment variable for tree-sitter CLI on Windows
 if vim.fn.has("win32") == 1 then
@@ -143,7 +148,7 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
 			vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
 			vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
-			vim.keymap.set("n", "<leader>sm", builtin.marks, { desc = "[S]earch [F]iles" })
+			vim.keymap.set("n", "<leader>sm", builtin.marks, { desc = "[S]earch [M]arks" })
 			vim.keymap.set("n", "<leader>ss", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
 			vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]earch current [W]ord" })
 			vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "[S]earch by [G]rep" })
@@ -299,16 +304,6 @@ map("n", "<Leader>hs", ":new<CR>", opts)
 
 -- Vertical empty slit
 map("n", "<Leader>vs", ":vnew<CR>", opts)
-
-vim.api.nvim_set_option("clipboard", "unnamedplus")
-
--- [[ ARCHITECTURAL POLYFILL ]]
--- Fixes Telescope for Neovim 0.12+
-vim.treesitter.ft_to_lang = function(ft)
-	return vim.treesitter.language.get_lang(ft) or ft
-end
-
-local map = vim.keymap.set
 
 map("n", "<F6>", function()
 	local file = vim.fn.expand("%:p")
