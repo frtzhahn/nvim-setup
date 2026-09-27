@@ -236,6 +236,7 @@ require("lazy").setup({
 	require("mocha.plugins.typr"),
 	require("mocha.plugins.minty"),
 	require("mocha.plugins.formatting"),
+	require("mocha.plugins.tmux"),
 })
 
 --wakatime
@@ -290,11 +291,6 @@ map("n", "<Leader>tv", ":vsplit | terminal<CR>", opts)
 -- 	end
 -- end, opts)
 
--- Navigate between splits (normal + terminal mode)
-map({ "n", "t" }, "<C-h>", "<C-\\><C-N><C-w>h", opts)
-map({ "n", "t" }, "<C-j>", "<C-\\><C-N><C-w>j", opts)
-map({ "n", "t" }, "<C-k>", "<C-\\><C-N><C-w>k", opts)
-map({ "n", "t" }, "<C-l>", "<C-\\><C-N><C-w>l", opts)
 
 -- Close current split
 map("n", "<Leader>q", ":close<CR>", opts)
