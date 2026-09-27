@@ -239,6 +239,7 @@ require("lazy").setup({
 	require("mocha.plugins.tmux"),
 	require("mocha.plugins.bqf"),
 	require("mocha.plugins.diffview"),
+	require("mocha.plugins.todo-comments"),
 })
 
 --wakatime
