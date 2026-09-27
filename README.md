@@ -29,59 +29,84 @@
 
 ## set up and installation
 
-install several core dependencies and runtimes.
+### automated installation (recommended)
+
+For a fresh operating system install or automated setup, run the appropriate one-liner:
+
+#### Linux & Android (Termux)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/frtzhahn/nvim-setup/master/scripts/install.sh | bash
+```
+
+#### Windows 10 / 11 (PowerShell)
+
+```powershell
+irm -useb https://raw.githubusercontent.com/frtzhahn/nvim-setup/master/scripts/install.ps1 | iex
+```
+
+> [!TIP]
+> The automated scripts detect your OS and package manager (`pacman`, `apt`, `dnf`, `pkg`, or `scoop`), install the required compilers and runtimes, ensure Neovim `>= 0.12.0` (with standalone fallback if distro packages are outdated), non-destructively back up existing configurations, and bootstrap plugins headlessly.
+
+---
+
+### manual installation
+
+If you prefer to install dependencies manually, follow the instructions for your platform below.
 
 ### prerequisites
 
-- **neovim (0.12+):** required for modern Treesitter support (`main` branch).
-- **tree-sitter CLI:** required to compile Treesitter language parsers.
-- **nerd font:** for icons (my recommendation: [jetBrainsMono nerd font](https://github.com/ryanoasis/nerd-fonts).
+- **neovim (0.12+):** required for modern Treesitter support (`main` branch) and unified `vim.lsp.config`.
+- **tree-sitter CLI:** required to compile Treesitter language parsers (`tree-sitter-cli`).
+- **nerd font:** for icons (recommendation: [JetBrainsMono Nerd Font](https://github.com/ryanoasis/nerd-fonts)).
 - **git & curl:** plugin and tool installation.
-- **ripgrep & FD :** fast searching.
+- **ripgrep & fd:** high-performance file searching and live grepping.
 
 ---
 
 ### specific OS installation
 
-#### Linux (debian/ubuntu based)
+#### Linux (Debian / Ubuntu based)
 
 ```bash
 sudo apt update
-sudo apt install -y neovim git curl wget unzip build-essential cmake ripgrep fd-find xclip wl-clipboard zsh konsole nodejs npm python3 python3-pip openjdk-17-jdk golang-go lua5.4
+sudo apt install -y git curl wget tar unzip ca-certificates build-essential cmake ripgrep fd-find xclip wl-clipboard zsh nodejs npm python3 python3-pip python3-venv python3-pynvim openjdk-17-jdk golang-go lua5.4 tree-sitter-cli
 
 mkdir -p ~/.local/bin
-ln -s $(which fdfind) ~/.local/bin/fd
+ln -sf $(which fdfind) ~/.local/bin/fd
 ```
 
-#### Linux (fedora based)
+#### Linux (Fedora based)
 
 ```bash
-sudo dnf install -y neovim git curl wget unzip make gcc-c++ cmake ripgrep fd-find xclip wl-clipboard zsh konsole nodejs npm python3 python3-pip java-17-openjdk-devel golang lua
+sudo dnf install -y git curl wget tar unzip make gcc gcc-c++ cmake ripgrep fd-find xclip wl-clipboard zsh nodejs npm python3 python3-pip python3-pynvim java-17-openjdk-devel golang lua tree-sitter-cli
 ```
 
-#### Linux (arch based)
+#### Linux (Arch / CachyOS based)
 
 ```bash
-sudo pacman -S --needed neovim git curl wget unzip base-devel cmake ripgrep fd xclip wl-clipboard zsh konsole nodejs npm python python-pip jdk-openjdk go lua
+sudo pacman -S --needed neovim git curl wget tar unzip base-devel cmake ripgrep fd xclip wl-clipboard zsh nodejs npm python python-pip python-pynvim jdk-openjdk go lua tree-sitter tree-sitter-cli
 ```
 
-#### winslop (10/11)
+#### Windows (10/11)
 
-- **install scoop (preffered package manager)**
+- **install scoop and required buckets:**
   ```powershell
-  Set-ExecutionPolicy RemoteSigned -scope CurrentUser
-  iwr -useb get.scoop.sh | iex
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+  irm -useb get.scoop.sh | iex
+  scoop install git 7zip
+  scoop bucket add extras
+  scoop bucket add versions
+  scoop bucket add java
   ```
-- **core tools**
+- **install core tools:**
   ```powershell
-  scoop install neovim git curl 7zip jq wget make gcc cmake ripgrep fd win32yank nodejs-lts python openjdk17-lts go lua tree-sitter
-  npm install -g ts-node
+  scoop install neovim-nightly curl wget jq make mingw cmake ripgrep fd win32yank nodejs-lts python openjdk17 go lua tree-sitter
   ```
 
 > [!NOTE]
->
-> - Ensure your Neovim is updated to **v0.12.0 or later** (if you already have it installed, run `scoop update neovim`).
-> - Treesitter requires a C compiler to compile language parsers. This setup automatically configures Treesitter to fall back to `gcc` or `clang` on Windows if MSVC (`cl.exe`) is absent, so no heavy Visual Studio / MSVC installation is required.
+> - Ensure your Neovim is **v0.12.0 or later** (on Windows via Scoop, install `neovim-nightly` from the `versions` bucket).
+> - Treesitter requires a C compiler to compile language parsers. On Windows, `mingw` provides `gcc`, and this configuration automatically sets `CC = "gcc"` if MSVC (`cl.exe`) is absent.
 
 - **font setup:** open your terminal settings and set the font to any **nerd font**.
 

@@ -58,6 +58,9 @@ flowchart TD
 │   ├── keymaps.md                # Complete keybinding catalog
 │   ├── tooling.md                # LSP, formatters (Conform), and DAP specifications
 │   └── workflows.md              # Operational guides (Build, Run, Git, Debug, Tasks)
+├── scripts/                      # Hardened cross-platform bootstrap automation
+│   ├── install.sh                # Linux (Arch, Debian, Fedora) & Android (Termux)
+│   └── install.ps1               # Windows 10 / 11 (PowerShell 5.1 / 7+)
 └── lua/
     └── mocha/
         ├── options.lua           # Core editor options, wildmenu, clipboard, provider flags
@@ -106,3 +109,37 @@ flowchart TD
 2. **Deterministic Startup:** Plugins are loaded on specific triggers (`ft`, `cmd`, `keys`, or `event = "VeryLazy"`). Cold boot time remains under 225ms.
 3. **Cross-Platform Portability:** Code execution (`<F6>`) uses Neovim's internal split terminal rather than host-specific terminal emulators (Kitty/Foot), ensuring identical behavior on Linux, Windows, and Android (Termux).
 4. **Shell Injection Prevention:** Paths passed to external compiler tools are escaped using `vim.fn.shellescape`.
+5. **Hermetic Bootstrapping:** Bootstrap scripts guarantee Neovim `>= 0.12.0` via internal runtime capability testing, eliminate PATH shadowing traps, enforce non-destructive configuration backups, and safely handle fresh OS installs without interactive manual intervention.
+
+---
+
+## 4. Automated Bootstrap Engine
+
+The repository provides hardened, production-grade bootstrap scripts designed for clean execution on freshly installed operating systems:
+
+- **Linux / Android:** [`scripts/install.sh`](file:///home/mocha/.config/nvim/scripts/install.sh)
+- **Windows (PowerShell):** [`scripts/install.ps1`](file:///home/mocha/.config/nvim/scripts/install.ps1)
+
+### Execution One-Liners
+
+```bash
+# Arch Linux / Debian 12 / Ubuntu 24.04 / Fedora 40+ / Termux:
+curl -fsSL https://raw.githubusercontent.com/frtzhahn/nvim-setup/master/scripts/install.sh | bash
+```
+
+```powershell
+# Windows 10 / 11 (PowerShell 5.1 / 7+):
+irm -useb https://raw.githubusercontent.com/frtzhahn/nvim-setup/master/scripts/install.ps1 | iex
+```
+
+### Bootstrap Architecture & Engineering Safeguards
+
+| Component | Linux / POSIX Engine (`install.sh`) | Windows Engine (`install.ps1`) |
+| :--- | :--- | :--- |
+| **Package Discovery** | Detects `pacman`, `apt`, `dnf`, or `pkg` via release files and `/etc/os-release`. | Installs and uses `scoop` in userland without requiring administrator privileges. |
+| **Compiler Toolchain** | Resolves `base-devel`, `build-essential`, or `clang` (with automatic `gcc`/`g++` symlinks on Termux). | Installs `mingw` (providing `gcc`, `g++`, `binutils`), avoiding MSVC Visual Studio bloat. |
+| **Neovim Guarantee** | Probes Neovim capabilities natively via `--clean --headless -c "lua vim.cmd(vim.fn.has('nvim-0.12') == 1...)"`. Falls back to official standalone nightly tarball if distro ships `< 0.12.0`. | Pulls `neovim-nightly` from the `versions` bucket to guarantee `>= 0.12.0` compatibility. |
+| **PATH Shadowing Defense** | Installs standalone binaries to `/usr/local` (or prepends `~/.local/bin` in `.bashrc`/`.zshrc`) to prevent distribution packages from taking precedence. | Refreshes current session `$env:Path` from User and Machine registry environments after tool installs. |
+| **Configuration Safety** | Non-destructive: if `~/.config/nvim` contains `.git`, pulls `--ff-only`. If non-git, backs up to `nvim.bak.<timestamp>`. | Non-destructive: backs up non-git `%LOCALAPPDATA%\nvim` to timestamped folder before cloning. |
+| **Plugin Pre-warm** | Executes `nvim --headless "+Lazy! sync" +qa` to pre-clone all plugin repositories. | Executes `nvim --headless "+Lazy! sync" +qa` to pre-clone all plugin repositories. |
+
