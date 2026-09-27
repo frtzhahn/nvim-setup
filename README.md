@@ -1,24 +1,29 @@
 # my nvim config
 
 <div align="center">
-   
+
 ![Image](https://github.com/user-attachments/assets/67e45217-ddbb-4733-81c3-eee36a6b726a)
 
 </div>
 
-[aikhe](https://github.com/aikhe) helped me build this setup from scratch so you'd better checkout his own amazing set up as well https://github.com/aikhe/nvim-config
+[aikhe](https://github.com/aikhe) helped me build this setup from scratch so you'd better checkout his own amazing set up as well [here](https://github.com/aikhe/nvim-config)
 
-##  features
+## features
+
 - **package manager:** [lazy.nvim](https://github.com/folke/lazy.nvim)
 - **fuzzy finder:** [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 - **language servers:** managed by [Mason](https://github.com/williamboman/mason.nvim) and [lspconfig](https://github.com/neovim/nvim-lspconfig)
-- **completion:** [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
-- **file explorer:** [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim) and [Oil.nvim](https://github.com/stevearc/oil.nvim)
-- **statusline:** [Lualine](https://github.com/nvim-lualine/lualine.nvim)
+- **completion:** [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) with [cmp-cmdline](https://github.com/hrsh7th/cmp-cmdline) for real-time command suggestions
+- **formatters:** [conform.nvim](https://github.com/stevearc/conform.nvim) (stylua, prettierd, csharpier)
+- **file explorer:** [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim), [Oil.nvim](https://github.com/stevearc/oil.nvim), and [csharp-explorer.nvim](https://github.com/dtrh95/csharp-explorer.nvim)
+- **statusline:** [Lualine](https://github.com/nvim-lualine/lualine.nvim) with live LSP indicators
+- **quickfix enhancement:** [nvim-bqf](https://github.com/kevinhwang91/nvim-bqf) for floating Treesitter previews
+- **git diff & history:** [diffview.nvim](https://github.com/sindrets/diffview.nvim)
+- **task & debt management:** [todo-comments.nvim](https://github.com/folke/todo-comments.nvim) and [dooing](https://github.com/atiladefreitas/dooing)
+- **multiplexer navigation:** [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) for seamless split/pane hopping
+- **code execution:** native bottom split terminal runner on `<F6>` + [cake terminal](https://github.com/aikhe/cake.nvim)
 - **discord rpc:** [Cord.nvim](https://github.com/vyfor/cord.nvim)
-- **nvim wrapped (goated plugin made by [aikhe](https://github.com/aikhe)):** [nvim wrapped](https://github.com/aikhe/wrapped.nvim)
-- **preferred terminal:** [cake terminal](https://github.com/aikhe/cake.nvim)
-- **themes:** multiple options including Material, Catppuccin, read `themes.lua` for more options
+- **nvim wrapped:** [wrapped.nvim](https://github.com/aikhe/wrapped.nvim)
 
 ---
 
@@ -27,6 +32,7 @@
 install several core dependencies and runtimes.
 
 ### prerequisites
+
 - **neovim (0.12+):** required for modern Treesitter support (`main` branch).
 - **tree-sitter CLI:** required to compile Treesitter language parsers.
 - **nerd font:** for icons (my recommendation: [jetBrainsMono nerd font](https://github.com/ryanoasis/nerd-fonts).
@@ -38,6 +44,7 @@ install several core dependencies and runtimes.
 ### specific OS installation
 
 #### Linux (debian/ubuntu based)
+
 ```bash
 sudo apt update
 sudo apt install -y neovim git curl wget unzip build-essential cmake ripgrep fd-find xclip wl-clipboard zsh konsole nodejs npm python3 python3-pip openjdk-17-jdk golang-go lua5.4
@@ -46,12 +53,14 @@ mkdir -p ~/.local/bin
 ln -s $(which fdfind) ~/.local/bin/fd
 ```
 
-####  Linux (fedora based)
+#### Linux (fedora based)
+
 ```bash
 sudo dnf install -y neovim git curl wget unzip make gcc-c++ cmake ripgrep fd-find xclip wl-clipboard zsh konsole nodejs npm python3 python3-pip java-17-openjdk-devel golang lua
 ```
 
 #### Linux (arch based)
+
 ```bash
 sudo pacman -S --needed neovim git curl wget unzip base-devel cmake ripgrep fd xclip wl-clipboard zsh konsole nodejs npm python python-pip jdk-openjdk go lua
 ```
@@ -59,16 +68,18 @@ sudo pacman -S --needed neovim git curl wget unzip base-devel cmake ripgrep fd x
 #### winslop (10/11)
 
 - **install scoop (preffered package manager)**
-   ```powershell
-   Set-ExecutionPolicy RemoteSigned -scope CurrentUser
-   iwr -useb get.scoop.sh | iex
-   ```
+  ```powershell
+  Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+  iwr -useb get.scoop.sh | iex
+  ```
 - **core tools**
-   ```powershell
-   scoop install neovim git curl 7zip jq wget make gcc cmake ripgrep fd win32yank nodejs-lts python openjdk17-lts go lua tree-sitter
-   npm install -g ts-node
-   ```
+  ```powershell
+  scoop install neovim git curl 7zip jq wget make gcc cmake ripgrep fd win32yank nodejs-lts python openjdk17-lts go lua tree-sitter
+  npm install -g ts-node
+  ```
+
 > [!NOTE]
+>
 > - Ensure your Neovim is updated to **v0.12.0 or later** (if you already have it installed, run `scoop update neovim`).
 > - Treesitter requires a C compiler to compile language parsers. This setup automatically configures Treesitter to fall back to `gcc` or `clang` on Windows if MSVC (`cl.exe`) is absent, so no heavy Visual Studio / MSVC installation is required.
 
@@ -77,37 +88,41 @@ sudo pacman -S --needed neovim git curl wget unzip base-devel cmake ripgrep fd x
 ---
 
 ### setting up this config (Linux)
+
 - **clone this repo directly on `.config/nvim` dir**
-   ```bash
-   git clone https://github.com/frtzhahn/nvim-setup.git ~/.config/nvim
-   ```
+  ```bash
+  git clone https://github.com/frtzhahn/nvim-setup.git ~/.config/nvim
+  ```
 - **launch nvim on your terminal**
-   ```bash
-   nvim
-   ```
-   **Lazy.nvim will automatically start installing plugins once finished run `:Mason` to verify LSPs are installed.**
+  ```bash
+  nvim
+  ```
+  **Lazy.nvim will automatically start installing plugins once finished run `:Mason` to verify LSPs are installed.**
 
 ---
 
 ### setting up this config (winslop 10/11)
 
 - create a dir to store the config files and clone the repo inside of it
-    ```powershell
-    mkdir $env:LOCALAPPDATA\nvim -Force
-    git clone https://github.com/frtzhahn/nvim-setup.git $env:LOCALAPPDATA\nvim
-    ```  
 
+  ```powershell
+  mkdir $env:LOCALAPPDATA\nvim -Force
+  git clone https://github.com/frtzhahn/nvim-setup.git $env:LOCALAPPDATA\nvim
+  ```
 
 - font setup:
-    open windows terminal, go to Settings > Defaults > Appearance, and set the Font face to a Nerd Font (e.g., Cascadia Code NF or JetBrainsMono NF).  
-
+  open windows terminal, go to Settings > Defaults > Appearance, and set the Font face to a Nerd Font (e.g., Cascadia Code NF or JetBrainsMono NF).
 
 - launch & sync:
-      type nvim in your terminal
-       - Lazy.nvim will automatically start downloading all plugins
-       - restart nvim 
-       - run :Mason inside Neovim to ensure your LSPs (like lua_ls, pyright, etc.) are being installed.
+  type nvim in your terminal - Lazy.nvim will automatically start downloading all plugins - restart nvim - run :Mason inside Neovim to ensure your LSPs (like lua_ls, pyright, etc.) are being installed.
 
-
->[!IMPORTANT]
->review/read the keybinds on this set up for smoother experience
+> [!IMPORTANT]
+>
+> ## documentation & guides
+>
+> Detailed guides and references are located in the [`docs/`](docs/) directory:
+>
+> - [Config Architecture & Design Principles](docs/README.md) — Hardware vs software layer breakdown, cold boot telemetry, and system structure.
+> - [Keymap Reference Manual](docs/keymaps.md) — Complete catalog of navigation, LSP, Git, and editing keybindings.
+> - [Tooling & LSP Matrix](docs/tooling.md) — Language servers, auto-formatting rules, and DAP debugger setups.
+> - [My Engineering Workflows](docs/workflows.md) — Practical guides for `<F6>` execution, tmux navigation, quickfix triage, and task tracking.
