@@ -230,6 +230,7 @@ require("lazy").setup({
 	require("mocha.plugins.showkeys"),
 	require("mocha.plugins.typr"),
 	require("mocha.plugins.minty"),
+	require("mocha.plugins.formatting"),
 })
 
 --wakatime
