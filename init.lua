@@ -315,35 +315,53 @@ map("n", "<F6>", function()
 	local filetype = vim.bo.filetype
 	local basename = vim.fn.expand("%:t:r")
 	local dir = vim.fn.fnamemodify(file, ":h")
+	local is_win = vim.fn.has("win32") == 1
 
 	if filename == "" then
-		print("Save the file first.")
+		vim.notify("Save the file first before running.", vim.log.levels.WARN)
 		return
 	end
 
+	-- Auto-save before running so the compiler sees the latest buffer contents
+	vim.cmd("silent! write")
+
+	local escaped_file = vim.fn.shellescape(file)
+	local escaped_dir = vim.fn.shellescape(dir)
+	local escaped_filename = vim.fn.shellescape(filename)
+	local escaped_base = vim.fn.shellescape(basename)
 	local cmd = nil
 
-	if filetype == "java" then
-		cmd = string.format('kitty --hold sh -c "cd %s && javac %s && java %s"', dir, filename, basename)
-	elseif filetype == "c" then
-		cmd = string.format('kitty --hold sh -c "cd %s && gcc %s -o %s && ./%s"', dir, filename, basename, basename)
+	if filetype == "c" then
+		local out_bin = is_win and (basename .. ".exe") or ("./" .. basename)
+		cmd = string.format("cd %s && gcc %s -o %s && %s", escaped_dir, escaped_filename, escaped_base, out_bin)
 	elseif filetype == "cpp" then
-		cmd = string.format('kitty --hold sh -c "cd %s && g++ %s -o %s && ./%s"', dir, filename, basename, basename)
+		local out_bin = is_win and (basename .. ".exe") or ("./" .. basename)
+		cmd = string.format("cd %s && g++ %s -o %s && %s", escaped_dir, escaped_filename, escaped_base, out_bin)
+	elseif filetype == "java" then
+		cmd = string.format("cd %s && javac %s && java %s", escaped_dir, escaped_filename, escaped_base)
 	elseif filetype == "python" then
-		cmd = string.format('kitty --hold sh -c "python3 %s"', filename)
+		local py = is_win and "python" or "python3"
+		cmd = string.format("%s %s", py, escaped_file)
 	elseif filetype == "javascript" then
-		cmd = string.format('kitty --hold sh -c "node %s"', filename)
+		cmd = string.format("node %s", escaped_file)
 	elseif filetype == "typescript" then
-		cmd = string.format('kitty --hold sh -c "ts-node %s"', filename)
+		cmd = string.format("ts-node %s", escaped_file)
 	elseif filetype == "sh" then
-		cmd = string.format('kitty --hold sh -c "bash %s"', filename)
+		cmd = string.format("bash %s", escaped_file)
 	elseif filetype == "lua" then
-		cmd = string.format('kitty --hold sh -c "lua %s"', filename)
+		-- nvim -l uses Neovim's embedded LuaJIT runtime with all Neovim APIs available
+		cmd = string.format("nvim -l %s", escaped_file)
 	elseif filetype == "go" then
-		cmd = string.format('kitty --hold sh -c "go run %s"', filename)
+		cmd = string.format("go run %s", escaped_file)
+	elseif filetype == "rust" then
+		local out_bin = is_win and (basename .. ".exe") or ("./" .. basename)
+		cmd = string.format("cd %s && rustc %s -o %s && %s", escaped_dir, escaped_filename, escaped_base, out_bin)
 	else
-		print("Unsupported filetype: " .. filetype)
+		vim.notify("Unsupported filetype for quick runner: " .. filetype, vim.log.levels.WARN)
 		return
 	end
-	vim.fn.jobstart({ "sh", "-c", cmd })
-end)
+
+	-- Execute inside a native Neovim bottom split terminal
+	vim.cmd("botright 12split | terminal " .. cmd)
+	vim.cmd("startinsert")
+end, { desc = "Run current file in native split terminal" })
