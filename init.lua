@@ -4,6 +4,11 @@ if not vim.treesitter.language.ft_to_lang then
 		return vim.treesitter.language.get_lang(ft) or ft
 	end
 end
+if not vim.treesitter.ft_to_lang then
+	vim.treesitter.ft_to_lang = function(ft)
+		return vim.treesitter.language.get_lang(ft) or ft
+	end
+end
 
 -- Automatically set the compiler environment variable for tree-sitter CLI on Windows
 if vim.fn.has("win32") == 1 then
@@ -143,7 +148,7 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
 			vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
 			vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
-			vim.keymap.set("n", "<leader>sm", builtin.marks, { desc = "[S]earch [F]iles" })
+			vim.keymap.set("n", "<leader>sm", builtin.marks, { desc = "[S]earch [M]arks" })
 			vim.keymap.set("n", "<leader>ss", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
 			vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]earch current [W]ord" })
 			vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "[S]earch by [G]rep" })
@@ -230,6 +235,12 @@ require("lazy").setup({
 	require("mocha.plugins.showkeys"),
 	require("mocha.plugins.typr"),
 	require("mocha.plugins.minty"),
+	require("mocha.plugins.formatting"),
+	require("mocha.plugins.tmux"),
+	require("mocha.plugins.bqf"),
+	require("mocha.plugins.diffview"),
+	require("mocha.plugins.todo-comments"),
+	require("mocha.plugins.dooing"),
 })
 
 --wakatime
@@ -284,11 +295,6 @@ map("n", "<Leader>tv", ":vsplit | terminal<CR>", opts)
 -- 	end
 -- end, opts)
 
--- Navigate between splits (normal + terminal mode)
-map({ "n", "t" }, "<C-h>", "<C-\\><C-N><C-w>h", opts)
-map({ "n", "t" }, "<C-j>", "<C-\\><C-N><C-w>j", opts)
-map({ "n", "t" }, "<C-k>", "<C-\\><C-N><C-w>k", opts)
-map({ "n", "t" }, "<C-l>", "<C-\\><C-N><C-w>l", opts)
 
 -- Close current split
 map("n", "<Leader>q", ":close<CR>", opts)
@@ -299,51 +305,59 @@ map("n", "<Leader>hs", ":new<CR>", opts)
 -- Vertical empty slit
 map("n", "<Leader>vs", ":vnew<CR>", opts)
 
-vim.api.nvim_set_option("clipboard", "unnamedplus")
-
--- [[ ARCHITECTURAL POLYFILL ]]
--- Fixes Telescope for Neovim 0.12+
-vim.treesitter.ft_to_lang = function(ft)
-	return vim.treesitter.language.get_lang(ft) or ft
-end
-
-local map = vim.keymap.set
-
 map("n", "<F6>", function()
 	local file = vim.fn.expand("%:p")
 	local filename = vim.fn.expand("%:t")
 	local filetype = vim.bo.filetype
 	local basename = vim.fn.expand("%:t:r")
 	local dir = vim.fn.fnamemodify(file, ":h")
+	local is_win = vim.fn.has("win32") == 1
 
 	if filename == "" then
-		print("Save the file first.")
+		vim.notify("Save the file first before running.", vim.log.levels.WARN)
 		return
 	end
 
+	-- Auto-save before running so the compiler sees the latest buffer contents
+	vim.cmd("silent! write")
+
+	local escaped_file = vim.fn.shellescape(file)
+	local escaped_dir = vim.fn.shellescape(dir)
+	local escaped_filename = vim.fn.shellescape(filename)
+	local escaped_base = vim.fn.shellescape(basename)
 	local cmd = nil
 
-	if filetype == "java" then
-		cmd = string.format('kitty --hold sh -c "cd %s && javac %s && java %s"', dir, filename, basename)
-	elseif filetype == "c" then
-		cmd = string.format('kitty --hold sh -c "cd %s && gcc %s -o %s && ./%s"', dir, filename, basename, basename)
+	if filetype == "c" then
+		local out_bin = is_win and (basename .. ".exe") or ("./" .. basename)
+		cmd = string.format("cd %s && gcc %s -o %s && %s", escaped_dir, escaped_filename, escaped_base, out_bin)
 	elseif filetype == "cpp" then
-		cmd = string.format('kitty --hold sh -c "cd %s && g++ %s -o %s && ./%s"', dir, filename, basename, basename)
+		local out_bin = is_win and (basename .. ".exe") or ("./" .. basename)
+		cmd = string.format("cd %s && g++ %s -o %s && %s", escaped_dir, escaped_filename, escaped_base, out_bin)
+	elseif filetype == "java" then
+		cmd = string.format("cd %s && javac %s && java %s", escaped_dir, escaped_filename, escaped_base)
 	elseif filetype == "python" then
-		cmd = string.format('kitty --hold sh -c "python3 %s"', filename)
+		local py = is_win and "python" or "python3"
+		cmd = string.format("%s %s", py, escaped_file)
 	elseif filetype == "javascript" then
-		cmd = string.format('kitty --hold sh -c "node %s"', filename)
+		cmd = string.format("node %s", escaped_file)
 	elseif filetype == "typescript" then
-		cmd = string.format('kitty --hold sh -c "ts-node %s"', filename)
+		cmd = string.format("ts-node %s", escaped_file)
 	elseif filetype == "sh" then
-		cmd = string.format('kitty --hold sh -c "bash %s"', filename)
+		cmd = string.format("bash %s", escaped_file)
 	elseif filetype == "lua" then
-		cmd = string.format('kitty --hold sh -c "lua %s"', filename)
+		-- nvim -l uses Neovim's embedded LuaJIT runtime with all Neovim APIs available
+		cmd = string.format("nvim -l %s", escaped_file)
 	elseif filetype == "go" then
-		cmd = string.format('kitty --hold sh -c "go run %s"', filename)
+		cmd = string.format("go run %s", escaped_file)
+	elseif filetype == "rust" then
+		local out_bin = is_win and (basename .. ".exe") or ("./" .. basename)
+		cmd = string.format("cd %s && rustc %s -o %s && %s", escaped_dir, escaped_filename, escaped_base, out_bin)
 	else
-		print("Unsupported filetype: " .. filetype)
+		vim.notify("Unsupported filetype for quick runner: " .. filetype, vim.log.levels.WARN)
 		return
 	end
-	vim.fn.jobstart({ "sh", "-c", cmd })
-end)
+
+	-- Execute inside a native Neovim bottom split terminal
+	vim.cmd("botright 12split | terminal " .. cmd)
+	vim.cmd("startinsert")
+end, { desc = "Run current file in native split terminal" })

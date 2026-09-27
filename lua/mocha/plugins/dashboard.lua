@@ -70,7 +70,7 @@ return {
 
 			-- Custom interactive buttons (including the newly added Mason Panel and Help/Docs shortcut)
 			dashboard.section.buttons.val = {
-				dashboard.button("e", "󰙅  File Explorer", "<cmd>Oil<cr>"), -- or NvimTreeToggle / Neotree
+				dashboard.button("e", "󰙅  File Explorer", "<cmd>Neotree<cr>"), -- options: Oil / Neotree
 				-- dashboard.button("f", "  Find File", "<cmd>Telescope find_files<cr>"),
 				dashboard.button("p", "󰦛  Restore Last Session", '<cmd>lua require("persistence").load()<cr>'),
 				dashboard.button(
