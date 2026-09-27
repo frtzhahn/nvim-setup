@@ -240,6 +240,7 @@ require("lazy").setup({
 	require("mocha.plugins.bqf"),
 	require("mocha.plugins.diffview"),
 	require("mocha.plugins.todo-comments"),
+	require("mocha.plugins.dooing"),
 })
 
 --wakatime
