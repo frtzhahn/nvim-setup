@@ -51,3 +51,37 @@ vim.keymap.set(
 	":Huefy<CR>",
 	{ noremap = true, silent = true, desc = "[M]inty [I]nteractive [H]uefy" }
 )
+
+-- [[ Window Navigation & Splits ]]
+vim.keymap.set("n", "<leader>wh", "<C-w>h", { desc = "Move focus window left" })
+vim.keymap.set("n", "<leader>wl", "<C-w>l", { desc = "Move focus window right" })
+vim.keymap.set("n", "<leader>wk", "<C-w>k", { desc = "Move focus window up" })
+vim.keymap.set("n", "<leader>wj", "<C-w>j", { desc = "Move focus window down" })
+vim.keymap.set("n", "<leader>q", ":close<CR>", { silent = true, desc = "Close current split window" })
+vim.keymap.set("n", "<leader>hs", ":new<CR>", { silent = true, desc = "Open empty horizontal split" })
+vim.keymap.set("n", "<leader>vs", ":vnew<CR>", { silent = true, desc = "Open empty vertical split" })
+vim.keymap.set("n", "<leader>ht", ":split | terminal<CR>", { silent = true, desc = "Open horizontal terminal split" })
+vim.keymap.set("n", "<leader>tv", ":vsplit | terminal<CR>", { silent = true, desc = "Open vertical terminal split" })
+
+-- ==============================================================================
+-- Terminal Modal Lifecycle Controls
+-- ==============================================================================
+-- 1. Double-Escape exits Terminal mode into Normal mode
+vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode to Normal mode" })
+
+-- 2. Direct split navigation out of terminal mode
+vim.keymap.set("t", "<C-h>", "<Cmd>wincmd h<CR>", { desc = "Move to left window from terminal" })
+vim.keymap.set("t", "<C-j>", "<Cmd>wincmd j<CR>", { desc = "Move to lower window from terminal" })
+vim.keymap.set("t", "<C-k>", "<Cmd>wincmd k<CR>", { desc = "Move to upper window from terminal" })
+vim.keymap.set("t", "<C-l>", "<Cmd>wincmd l<CR>", { desc = "Move to right window from terminal" })
+
+-- 3. Terminal Buffer Autocommand: 3rd Escape or 'q' closes the terminal split in Normal mode
+vim.api.nvim_create_autocmd("TermOpen", {
+	group = vim.api.nvim_create_augroup("mocha-terminal-modal", { clear = true }),
+	callback = function(event)
+		vim.bo[event.buf].buflisted = false
+		vim.keymap.set("n", "<Esc>", "<cmd>close<CR>", { buffer = event.buf, silent = true, desc = "Close terminal split" })
+		vim.keymap.set("n", "q", "<cmd>close<CR>", { buffer = event.buf, silent = true, desc = "Close terminal split" })
+	end,
+})
+

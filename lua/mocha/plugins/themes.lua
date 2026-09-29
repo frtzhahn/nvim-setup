@@ -14,7 +14,7 @@
 -- 	priority = 1000,
 -- 	config = function()
 -- 		require("gruvbox").setup({
--- 			transparent_mode = true, -- enable transparent background
+-- 			transparent_mode = false, -- enable transparent background
 -- 		})
 --
 -- 		vim.o.background = "dark" -- or "light"
@@ -26,7 +26,7 @@
 -- return {
 -- 	"projekt0n/github-nvim-theme",
 -- 	name = "github-theme",
--- 	lazy = false,   -- make sure we load this during startup if it is your main colorscheme
+-- 	lazy = false, -- make sure we load this during startup if it is your main colorscheme
 -- 	priority = 1000, -- make sure to load this before all the other start plugins
 -- 	config = function()
 -- 		require("github-theme").setup({
@@ -67,7 +67,7 @@
 -- 	config = function()
 -- 		-- Set your desired style here BEFORE loading the colorscheme.
 -- 		-- Options: 'darker', 'lighter', 'oceanic', 'palenight', 'deep ocean'
--- 		vim.g.material_style = "deep ocean"
+-- 		vim.g.material_style = "palenight"
 -- 		-- Optional: Call setup if you want to tweak specific UI elements later
 -- 		-- (like making the background transparent)
 -- 		require("material").setup({
@@ -79,25 +79,51 @@
 -- }
 
 -- nightfox theme
+-- return {
+-- 	"EdenEast/nightfox.nvim",
+-- 	lazy = false,
+-- 	priority = 1000,
+-- 	config = function()
+-- 		-- Optional: Call setup if you want to tweak specific UI elements later
+-- 		-- (like enabling transparent backgrounds, changing styles for keywords, etc.)
+-- 		require("nightfox").setup({
+-- 			options = {
+-- 				-- transparent = false,
+-- 				transparent = true,
+-- 			},
+-- 		})
+--
+-- 		-- Set your desired style here by uncommenting the one you want.
+-- 		-- Options: 'nightfox', 'dayfox', 'dawnfox', 'duskfox', 'nordfox', 'terafox', 'carbonfox'
+-- 		-- vim.cmd("colorscheme nightfox")
+-- 		-- vim.cmd("colorscheme duskfox")
+-- 		vim.cmd("colorscheme carbonfox")
+-- 		-- vim.cmd("colorscheme nordfox")
+-- 		-- vim.cmd("colorscheme terafox")
+-- 	end,
+-- }
+
 return {
-	"EdenEast/nightfox.nvim",
+	"catppuccin/nvim",
+	name = "catppuccin",
 	lazy = false,
 	priority = 1000,
 	config = function()
-		-- Optional: Call setup if you want to tweak specific UI elements later
-		-- (like enabling transparent backgrounds, changing styles for keywords, etc.)
-		require("nightfox").setup({
-			options = {
-				transparent = false,
+		require("catppuccin").setup({
+			flavour = "mocha", -- latte, frappe, macchiato, mocha
+			transparent_background = false,
+			styles = {
+				comments = { "italic" },
+				conditionals = { "italic" },
+			},
+			integrations = {
+				cmp = true,
+				gitsigns = true,
+				nvimtree = true,
+				notify = false,
 			},
 		})
 
-		-- Set your desired style here by uncommenting the one you want.
-		-- Options: 'nightfox', 'dayfox', 'dawnfox', 'duskfox', 'nordfox', 'terafox', 'carbonfox'
-		-- vim.cmd("colorscheme nightfox")
-		-- vim.cmd("colorscheme duskfox")
-		vim.cmd("colorscheme carbonfox")
-		-- vim.cmd("colorscheme nordfox")
-		-- vim.cmd("colorscheme terafox")
+		vim.cmd.colorscheme("catppuccin")
 	end,
 }
