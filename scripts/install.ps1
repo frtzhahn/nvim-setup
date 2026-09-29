@@ -89,9 +89,17 @@ function Install-Tools {
 function Deploy-Config {
     Write-Info "Deploying configuration to $TargetDir..."
 
+    $ScriptRoot = Split-Path -Parent $PSScriptRoot
+
     if (Test-Path "$TargetDir\.git") {
         Write-Info "Existing git repository found. Pulling latest commits..."
         git -C $TargetDir pull --ff-only
+    } elseif (($ScriptRoot -ne $TargetDir) -and (Test-Path "$ScriptRoot\init.lua")) {
+        Write-Info "Deploying from local clone at $ScriptRoot to $TargetDir..."
+        if (-not (Test-Path (Split-Path -Parent $TargetDir))) {
+            New-Item -ItemType Directory -Path (Split-Path -Parent $TargetDir) -Force | Out-Null
+        }
+        Copy-Item -Path $ScriptRoot -Destination $TargetDir -Recurse -Force
     } elseif (Test-Path $TargetDir) {
         $timestamp = Get-Date -Format "yyyyMMddHHmmss"
         $backupDir = "$TargetDir.bak.$timestamp"

@@ -68,7 +68,7 @@ install_dependencies() {
     case "${OS_TYPE}" in
         arch)
             log_info "Using pacman package manager..."
-            ${SUDO} pacman -S --needed --noconfirm \
+            ${SUDO} pacman -Sy --needed --noconfirm \
                 neovim git curl wget tar unzip base-devel cmake ripgrep fd \
                 xclip wl-clipboard zsh nodejs npm python python-pip python-pynvim \
                 jdk-openjdk go lua tree-sitter tree-sitter-cli
@@ -201,12 +201,17 @@ ensure_neovim_version() {
 # ------------------------------------------------------------------------------
 deploy_config() {
     mkdir -p "${HOME}/.config"
+    local script_root
+    script_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
     if [ -d "${TARGET_DIR}/.git" ]; then
         log_info "Existing git repository found at ${TARGET_DIR}. Updating..."
         git -C "${TARGET_DIR}" pull --ff-only || {
             log_warn "git pull failed; preserving current working state."
         }
+    elif [ "${script_root}" != "${TARGET_DIR}" ] && [ -f "${script_root}/init.lua" ]; then
+        log_info "Deploying from local clone at ${script_root} to ${TARGET_DIR}..."
+        cp -a "${script_root}" "${TARGET_DIR}"
     elif [ -d "${TARGET_DIR}" ]; then
         local backup_path="${TARGET_DIR}.bak.$(date +%Y%m%d%H%M%S)"
         log_warn "Existing non-git directory found at ${TARGET_DIR}."
