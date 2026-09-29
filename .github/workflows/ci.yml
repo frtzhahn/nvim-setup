@@ -48,7 +48,7 @@ jobs:
       - name: Run bootstrap inside container
         if: matrix.target == 'docker'
         run: |
-          docker run --rm -v "${{ github.workspace }}:/workspace" -w /workspace "${{ matrix.image }}" bash -c "
+          docker run --rm -e CI=true -e DEBIAN_FRONTEND=noninteractive -v "${{ github.workspace }}:/workspace" -w /workspace "${{ matrix.image }}" bash -c "
             set -eo pipefail
             ${{ matrix.prep }}
             ./scripts/install.sh
