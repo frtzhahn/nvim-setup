@@ -202,14 +202,14 @@ return {
 				editing = function(opts)
 					local is_modified = vim.bo.modified
 					if is_modified then
-						-- return string.format("Unsaved: %s", opts.filename)
+						return string.format("Unsaved: %s", opts.filename)
 					else
-						-- return string.format("Working on %s", opts.filename)
+						return string.format("Working on %s", opts.filename)
 					end
 				end,
 
 				file_browser = function(opts)
-					-- return "Browsing " .. opts.name
+					return "Browsing " .. opts.name
 				end,
 				workspace = function(opts)
 					-- return "Project: " .. opts.workspace

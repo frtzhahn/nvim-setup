@@ -20,7 +20,13 @@ return {
 			end,
 			desc = "Previous todo comment",
 		},
-		{ "<leader>st", "<cmd>TodoTelescope<cr>", desc = "[S]earch [T]odos" },
+		{
+			"<leader>st",
+			function()
+				Snacks.picker("todo_comments")
+			end,
+			desc = "[S]earch [T]odos",
+		},
 		{ "<leader>xt", "<cmd>TodoTrouble<cr>", desc = "Todo (Trouble)" },
 	},
 }

@@ -77,8 +77,9 @@ flowchart TD
             ├── diffview.lua      # Side-by-side Git diff and revision history tool
             ├── dooing.lua        # Interactive floating task and checklist manager
             ├── formatting.lua    # Dedicated conform.nvim engine (stylua, prettierd, csharpier)
+            ├── gitsigns.lua      # In-buffer git gutter indicators, hunk jumps, and blame
             ├── history.lua       # Clipboard history popup manager
-            ├── indents.lua       # Indent guides specification
+            ├── indents.lua       # Indent guides specification (dormant reference)
             ├── jdtls.lua         # Eclipse JDTLS Java IDE integration
             ├── live-server.lua   # HTML/Web live server integration
             ├── lsp.lua           # Mason, Mason-LSPConfig, language server options
@@ -90,7 +91,9 @@ flowchart TD
             ├── oil.lua           # Modal buffer filesystem editor
             ├── persistence.lua   # Automated session saving and restoration
             ├── showkeys.lua      # Active keystroke on-screen display
+            ├── snacks.lua        # folke/snacks.nvim (picker, notifier, bigfile, words)
             ├── surround.lua      # Delimiter manipulation and autopairs
+            ├── telescope.lua     # Telescope specification (dormant reference)
             ├── themes.lua        # Colorscheme selection and catalog
             ├── tmux.lua          # christoomey/vim-tmux-navigator integration
             ├── todo-comments.lua # Codebase TODO/FIXME highlighter and searcher
@@ -98,6 +101,7 @@ flowchart TD
             ├── trouble.lua       # Diagnostic and workspace symbol drawer
             ├── typr.lua          # Lazy-loaded typing tutor game
             ├── wakatime.lua      # Coding metrics tracking
+            ├── which-key.lua     # Which-key local discovery popup
             └── wrapped.lua       # Coding review metrics
 ```
 

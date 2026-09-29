@@ -11,14 +11,16 @@
 ## features
 
 - **package manager:** [lazy.nvim](https://github.com/folke/lazy.nvim)
-- **fuzzy finder:** [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
+- **fuzzy finder & telemetry:** [snacks.nvim](https://github.com/folke/snacks.nvim) (snacks.picker, notifier, bigfile)
 - **language servers:** managed by [Mason](https://github.com/williamboman/mason.nvim) and [lspconfig](https://github.com/neovim/nvim-lspconfig)
 - **completion:** [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) with [cmp-cmdline](https://github.com/hrsh7th/cmp-cmdline) for real-time command suggestions
 - **formatters:** [conform.nvim](https://github.com/stevearc/conform.nvim) (stylua, prettierd, csharpier)
 - **file explorer:** [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim), [Oil.nvim](https://github.com/stevearc/oil.nvim), and [csharp-explorer.nvim](https://github.com/dtrh95/csharp-explorer.nvim)
 - **statusline:** [Lualine](https://github.com/nvim-lualine/lualine.nvim) with live LSP indicators
 - **quickfix enhancement:** [nvim-bqf](https://github.com/kevinhwang91/nvim-bqf) for floating Treesitter previews
+- **git telemetry & blame:** [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
 - **git diff & history:** [diffview.nvim](https://github.com/sindrets/diffview.nvim)
+- **ast text objects:** [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
 - **task & debt management:** [todo-comments.nvim](https://github.com/folke/todo-comments.nvim) and [dooing](https://github.com/atiladefreitas/dooing)
 - **multiplexer navigation:** [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) for seamless split/pane hopping
 - **code execution:** native bottom split terminal runner on `<F6>` + [cake terminal](https://github.com/aikhe/cake.nvim)

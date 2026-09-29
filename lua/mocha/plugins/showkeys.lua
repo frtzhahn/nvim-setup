@@ -7,7 +7,7 @@ return {
 		maxkeys = 3,
 		position = "top-right",
 		show_count = true,
-		theme = "gruvbox", -- "auto", "tokyonight", "catppuccin", "gruvbox", "nord", "rose-pine", "kanagawa", "dracula", "carbonfox"
+		theme = "catppuccin", -- "auto", "tokyonight", "catppuccin", "gruvbox", "nord", "rose-pine", "kanagawa", "dracula", "carbonfox"
 
 		-- personal pref
 		-- style = {
@@ -15,6 +15,7 @@ return {
 		-- 	active = { fg = "#ffffff", bg = "#ff6b81", bold = true },
 		-- 	-- previous inactive keys
 		-- 	inactive = { fg = "#c0c0c0", bg = "#383838" },
+		-- 	window = { bg = "#3c3836", fg = "#c0c0c0" },
 		-- },
 	},
 }

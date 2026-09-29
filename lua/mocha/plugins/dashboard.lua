@@ -71,20 +71,20 @@ return {
 			-- Custom interactive buttons (including the newly added Mason Panel and Help/Docs shortcut)
 			dashboard.section.buttons.val = {
 				dashboard.button("e", "󰙅  File Explorer", "<cmd>Neotree<cr>"), -- options: Oil / Neotree
-				-- dashboard.button("f", "  Find File", "<cmd>Telescope find_files<cr>"),
+				-- dashboard.button("f", "  Find File", "<cmd>lua Snacks.picker.files()<cr>"),
 				dashboard.button("p", "󰦛  Restore Last Session", '<cmd>lua require("persistence").load()<cr>'),
 				dashboard.button(
 					"v",
 					"  Git Changed Files",
-					'<cmd>lua if not pcall(vim.cmd, "Telescope git_status") then vim.notify("Not a git repository", vim.log.levels.WARN) end<cr>'
+					"<cmd>lua Snacks.picker.git_status()<cr>"
 				),
-				dashboard.button("r", "  Recent Files", "<cmd>Telescope oldfiles<cr>"),
+				dashboard.button("r", "  Recent Files", "<cmd>lua Snacks.picker.recent()<cr>"),
 				dashboard.button("c", "󰒓  Edit Neovim Config", "<cmd>e $MYVIMRC | cd %:p:h<cr>"),
-				-- dashboard.button('g', '  Live Grep', '<cmd>Telescope live_grep<cr>'),
+				-- dashboard.button('g', '  Live Grep', '<cmd>lua Snacks.picker.grep()<cr>'),
 				dashboard.button("m", "  Mason Panel", "<cmd>Mason<cr>"),
 				-- dashboard.button('s', '  Sync Plugins', '<cmd>Lazy sync<cr>'),
 				dashboard.button("l", "  Lazy Dashboard", "<cmd>Lazy<cr>"),
-				dashboard.button("h", "  Help / Docs", "<cmd>Telescope help_tags<cr>"),
+				dashboard.button("h", "  Help / Docs", "<cmd>lua Snacks.picker.help()<cr>"),
 				-- dashboard.button("q", "  Quit Neovim", "<cmd>qa<cr>"),
 			}
 
