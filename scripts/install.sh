@@ -68,7 +68,7 @@ install_dependencies() {
     case "${OS_TYPE}" in
         arch)
             log_info "Using pacman package manager..."
-            ${SUDO} pacman -S --needed --noconfirm \
+            ${SUDO} pacman -Sy --needed --noconfirm \
                 neovim git curl wget tar unzip base-devel cmake ripgrep fd \
                 xclip wl-clipboard zsh nodejs npm python python-pip python-pynvim \
                 jdk-openjdk go lua tree-sitter tree-sitter-cli
@@ -79,7 +79,7 @@ install_dependencies() {
             ${SUDO} apt install -y \
                 git curl wget tar unzip ca-certificates build-essential cmake ripgrep fd-find \
                 xclip wl-clipboard zsh nodejs npm python3 python3-pip python3-venv python3-pynvim \
-                openjdk-17-jdk golang-go lua5.4 tree-sitter-cli
+                openjdk-17-jdk golang-go lua5.4
 
             mkdir -p "${HOME}/.local/bin"
             if command -v fdfind >/dev/null 2>&1 && ! command -v fd >/dev/null 2>&1; then
@@ -90,10 +90,10 @@ install_dependencies() {
         fedora)
             log_info "Using dnf package manager..."
             # NOTE: We intentionally OMIT neovim from dnf to avoid placing an outdated v0.10 in /usr/bin
-            ${SUDO} dnf install -y \
+            ${SUDO} dnf install -y --skip-unavailable \
                 git curl wget tar unzip make gcc gcc-c++ cmake ripgrep fd-find \
-                xclip wl-clipboard zsh nodejs npm python3 python3-pip python3-pynvim \
-                java-17-openjdk-devel golang lua tree-sitter-cli
+                xclip wl-clipboard zsh nodejs npm python3 python3-pip python3-neovim \
+                java-openjdk-devel golang lua tree-sitter-cli
 
             mkdir -p "${HOME}/.local/bin"
             if command -v fdfind >/dev/null 2>&1 && ! command -v fd >/dev/null 2>&1; then
@@ -134,7 +134,7 @@ ensure_neovim_version() {
         install_standalone=true
     else
         # Feature test: Neovim >= 0.12 natively evaluates has('nvim-0.12') == 1
-        if "${nvim_bin}" --clean --headless -u NONE -c "lua vim.cmd(vim.fn.has('nvim-0.12') == 1 and 'q 0' or 'cq 1')" >/dev/null 2>&1; then
+        if "${nvim_bin}" --clean --headless -u NONE -c "lua os.exit(vim.fn.has('nvim-0.12') == 1 and 0 or 1)" >/dev/null 2>&1; then
             log_ok "Neovim version satisfies requirement (>= 0.12.0): $("${nvim_bin}" --version | head -n 1)"
         else
             log_warn "Neovim version is below required 0.12.0: $("${nvim_bin}" --version | head -n 1)"
@@ -201,12 +201,17 @@ ensure_neovim_version() {
 # ------------------------------------------------------------------------------
 deploy_config() {
     mkdir -p "${HOME}/.config"
+    local script_root
+    script_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
     if [ -d "${TARGET_DIR}/.git" ]; then
         log_info "Existing git repository found at ${TARGET_DIR}. Updating..."
         git -C "${TARGET_DIR}" pull --ff-only || {
             log_warn "git pull failed; preserving current working state."
         }
+    elif [ "${script_root}" != "${TARGET_DIR}" ] && [ -f "${script_root}/init.lua" ]; then
+        log_info "Deploying from local clone at ${script_root} to ${TARGET_DIR}..."
+        cp -a "${script_root}" "${TARGET_DIR}"
     elif [ -d "${TARGET_DIR}" ]; then
         local backup_path="${TARGET_DIR}.bak.$(date +%Y%m%d%H%M%S)"
         log_warn "Existing non-git directory found at ${TARGET_DIR}."

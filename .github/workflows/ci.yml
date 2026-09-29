@@ -1,0 +1,77 @@
+name: CI Platform Matrix
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-linux:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "Ubuntu 24.04 LTS (Native)"
+            target: native
+          - name: "Debian 12 Bookworm (Container)"
+            target: docker
+            image: "debian:bookworm-slim"
+            prep: "export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -y git sudo curl ca-certificates"
+          - name: "Fedora 41 (Container)"
+            target: docker
+            image: "fedora:latest"
+            prep: "dnf install -y git sudo curl ca-certificates"
+          - name: "Arch Linux (Container)"
+            target: docker
+            image: "archlinux:latest"
+            prep: "pacman -Syu --noconfirm git sudo curl ca-certificates"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run bootstrap on native runner
+        if: matrix.target == 'native'
+        run: |
+          ./scripts/install.sh
+          export PATH="/usr/local/bin:$HOME/.local/bin:$PATH"
+          nvim --headless -c "quit"
+
+      - name: Run bootstrap inside container
+        if: matrix.target == 'docker'
+        run: |
+          docker run --rm -e CI=true -e DEBIAN_FRONTEND=noninteractive -v "${{ github.workspace }}:/workspace" -w /workspace "${{ matrix.image }}" bash -c "
+            set -eo pipefail
+            ${{ matrix.prep }}
+            ./scripts/install.sh
+            export PATH=\"/usr/local/bin:/root/.local/bin:\$PATH\"
+            nvim --headless -c 'quit'
+          "
+
+  test-windows:
+    name: "Windows 11 (PowerShell)"
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Execute Windows bootstrap script
+        shell: powershell
+        run: |
+          Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+          .\scripts\install.ps1
+
+      - name: Verify Neovim headless startup
+        shell: powershell
+        run: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "User") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "Machine")
+          nvim --headless -c "quit"
