@@ -179,7 +179,7 @@ Manipulate code grammatically based on Abstract Syntax Tree (AST) node boundarie
 | `<Leader>td` | Normal | `:Dooing<CR>` | Toggle floating task and checklist manager |
 | `]t` | Normal | `todo_comments.jump_next` | Jump to next `TODO` or `FIXME` tag |
 | `[t` | Normal | `todo_comments.jump_prev` | Jump to previous `TODO` or `FIXME` tag |
-| `<Leader>st` | Normal | `:TodoTelescope<CR>` | Search all project todos in picker |
+| `<Leader>st` | Normal | `Snacks.picker("todo_comments")` | Search all project todos in Snacks picker |
 | `<Leader>xt` | Normal | `:TodoTrouble<CR>` | List all project todos in Trouble drawer |
 
 ---
