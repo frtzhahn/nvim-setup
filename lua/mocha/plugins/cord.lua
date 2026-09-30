@@ -159,17 +159,17 @@ return {
 				-- theme = 'minecraft',
 				-- flavor = 'dark',
 
-				-- theme = 'catppuccin',
-				-- flavor = 'accent',
+				-- theme = "catppuccin",
+				-- flavor = "accent",
 
-				-- theme = 'atom',
-				-- flavor = 'dark',
+				-- theme = "atom",
+				-- flavor = "dark",
 
-				-- theme = 'void',
-				-- flavor = 'accent',
+				-- theme = "void",
+				-- flavor = "accent",
 
-				-- theme = 'classic',
-				-- flavor = 'dark',
+				-- theme = "classic",
+				-- flavor = "dark",
 
 				swap_fields = false,
 				swap_icons = false,
@@ -183,14 +183,14 @@ return {
 
 			idle = {
 				enabled = true,
-				timeout = 90000000,
+				timeout = 1800000,
 				show_status = true,
 				ignore_focus = true,
 				unidle_on_focus = true,
 				smart_idle = true,
-				details = "do not disturb fls ☕",
-				state = "Taking a break from this agony 🫩✌️",
-				tooltip = "🛌💤",
+				details = "probably sleeping",
+				state = "𐔌՞- . -՞𐦯 ᶻ𝗓𐰁",
+				tooltip = "⋆｡˚ ☁︎ ˚｡⋆｡˚☽˚｡⋆",
 				icon = nil,
 			},
 

@@ -7,8 +7,8 @@
 --vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 --vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
-vim.keymap.set("n", "=", [[<cmd>vertical resize +5<cr>]])       -- make the window biger horizontally
-vim.keymap.set("n", "-", [[<cmd>vertical resize -5<cr>]])       -- make the window smaller horizontally
+vim.keymap.set("n", "=", [[<cmd>vertical resize +5<cr>]]) -- make the window biger horizontally
+vim.keymap.set("n", "-", [[<cmd>vertical resize -5<cr>]]) -- make the window smaller horizontally
 vim.keymap.set("n", "<A-=>", [[<cmd>horizontal resize +2<cr>]]) -- make the window bigger vertically by pressing shift and =
 vim.keymap.set("n", "<M-->", [[<cmd>horizontal resize -2<cr>]]) -- make the window smaller vertically by pressing shift and -
 
@@ -80,8 +80,12 @@ vim.api.nvim_create_autocmd("TermOpen", {
 	group = vim.api.nvim_create_augroup("mocha-terminal-modal", { clear = true }),
 	callback = function(event)
 		vim.bo[event.buf].buflisted = false
-		vim.keymap.set("n", "<Esc>", "<cmd>close<CR>", { buffer = event.buf, silent = true, desc = "Close terminal split" })
+		vim.keymap.set(
+			"n",
+			"<Esc>",
+			"<cmd>close<CR>",
+			{ buffer = event.buf, silent = true, desc = "Close terminal split" }
+		)
 		vim.keymap.set("n", "q", "<cmd>close<CR>", { buffer = event.buf, silent = true, desc = "Close terminal split" })
 	end,
 })
-

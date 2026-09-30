@@ -17,6 +17,7 @@ return {
 			notifier = {
 				enabled = true,
 				timeout = 3000,
+				-- top_down = false,
 			},
 			picker = {
 				enabled = true,

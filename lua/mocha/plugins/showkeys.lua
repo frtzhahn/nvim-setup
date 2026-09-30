@@ -3,9 +3,9 @@ return {
 	event = "VimEnter",
 	opts = {
 		autostart = true,
-		timeout = 3,
+		timeout = 1,
 		maxkeys = 3,
-		position = "top-right",
+		position = "bottom-right",
 		show_count = true,
 		theme = "catppuccin", -- "auto", "tokyonight", "catppuccin", "gruvbox", "nord", "rose-pine", "kanagawa", "dracula", "carbonfox"
 

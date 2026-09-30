@@ -70,14 +70,10 @@ return {
 
 			-- Custom interactive buttons (including the newly added Mason Panel and Help/Docs shortcut)
 			dashboard.section.buttons.val = {
-				dashboard.button("e", "󰙅  File Explorer", "<cmd>Neotree<cr>"), -- options: Oil / Neotree
+				dashboard.button("e", "󰙅  File Explorer", "<cmd>Neotree float<cr>"), -- options: Oil / Neotree / lua Snacks.picker.files()
 				-- dashboard.button("f", "  Find File", "<cmd>lua Snacks.picker.files()<cr>"),
 				dashboard.button("p", "󰦛  Restore Last Session", '<cmd>lua require("persistence").load()<cr>'),
-				dashboard.button(
-					"v",
-					"  Git Changed Files",
-					"<cmd>lua Snacks.picker.git_status()<cr>"
-				),
+				dashboard.button("v", "  Git Changed Files", "<cmd>lua Snacks.picker.git_status()<cr>"),
 				dashboard.button("r", "  Recent Files", "<cmd>lua Snacks.picker.recent()<cr>"),
 				dashboard.button("c", "󰒓  Edit Neovim Config", "<cmd>e $MYVIMRC | cd %:p:h<cr>"),
 				-- dashboard.button('g', '  Live Grep', '<cmd>lua Snacks.picker.grep()<cr>'),
