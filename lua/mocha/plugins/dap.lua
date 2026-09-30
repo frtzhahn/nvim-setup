@@ -90,6 +90,7 @@ return {
         dap.defaults.fallback.external_terminal = get_linux_terminal()
       end
       dap.defaults.fallback.force_external_terminal = false
+      dap.defaults.fallback.terminal_win_cmd = 'belowright 12new'
 
       -- 5. FIXING ADAPTERS: Resolve strings synchronously *during* initialization block
       local ok, registry = pcall(require, "mason-registry")

@@ -22,8 +22,10 @@ return {
 			else
 				lsp_format_opt = "fallback"
 			end
+			-- C# CSharpier JIT cold starts on CoreCLR often take 600-1200ms
+			local timeout = vim.bo[bufnr].filetype == "cs" and 2500 or 500
 			return {
-				timeout_ms = 500,
+				timeout_ms = timeout,
 				lsp_format = lsp_format_opt,
 			}
 		end,
@@ -41,18 +43,22 @@ return {
 		},
 		formatters = {
 			csharpier = function(bufnr)
+				local mason_path = vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "bin", "csharpier")
 				local global_path = vim.fn.expand("~/.dotnet/tools/dotnet-csharpier")
-				local cmd = "dotnet-csharpier"
-				if vim.fn.executable(global_path) == 1 then
+				local global_path_alt = vim.fn.expand("~/.dotnet/tools/csharpier")
+				local cmd = "csharpier"
+
+				if vim.fn.executable(mason_path) == 1 then
+					cmd = mason_path
+				elseif vim.fn.executable(global_path) == 1 then
 					cmd = global_path
-				else
-					local global_path_alt = vim.fn.expand("~/.dotnet/tools/csharpier")
-					if vim.fn.executable(global_path_alt) == 1 then
-						cmd = global_path_alt
-					end
+				elseif vim.fn.executable(global_path_alt) == 1 then
+					cmd = global_path_alt
 				end
+
 				return {
 					command = cmd,
+					args = { "format", "--stdin-path", "$FILENAME" },
 				}
 			end,
 		},
