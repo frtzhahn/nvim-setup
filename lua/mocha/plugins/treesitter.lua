@@ -65,6 +65,7 @@ return {
 				"typescript",
 				"java",
 				"c_sharp",
+				"razor",
 			})
 			-- Enable Highlighting natively
 			vim.api.nvim_create_autocmd("FileType", {
