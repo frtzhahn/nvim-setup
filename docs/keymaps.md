@@ -44,14 +44,14 @@ Navigation is unified across Neovim splits and tmux panes via `christoomey/vim-t
 | `<Leader>pc` | Normal | `:Neotree toggle<CR>` | Toggle Neo-tree explorer |
 | `<Leader>pv` | Normal | `:Oil<CR>` | Open Oil directory editor |
 | `<Leader>pe` | Normal | `:Oil --float<CR>` | Open Oil floating directory editor |
-| `<Leader>cs` | Normal | `:CSharpExplorerToggle<CR>` | Toggle C# Solution Explorer drawer |
+| `<Leader>xx` / `<Leader>xd` | Normal | `snacks.bufdelete()` | Delete current buffer without altering window layout |
 | `<S-h>` | Normal | `:BufferLineCyclePrev<CR>` | Cycle to previous buffer tab |
 | `<S-l>` | Normal | `:BufferLineCycleNext<CR>` | Cycle to next buffer tab |
-| `<Leader>dp` | Normal | `:BufferLineTogglePin<CR>` | Pin/unpin current buffer tab |
-| `<Leader>do` | Normal | `:BufferLineCloseOthers<CR>` | Close all buffer tabs except active |
-| `<Leader>dl` | Normal | `:BufferLineCloseLeft<CR>` | Close all buffer tabs to the left |
-| `<Leader>dr` | Normal | `:BufferLineCloseRight<CR>` | Close all buffer tabs to the right |
-| `<Leader>dP` | Normal | `:BufferLineGroupClose ungrouped<CR>` | Close non-pinned buffer tabs |
+| `<Leader>xp` | Normal | `:BufferLineTogglePin<CR>` | Pin/unpin current buffer tab |
+| `<Leader>xo` | Normal | `:BufferLineCloseOthers<CR>` | Close all buffer tabs except active |
+| `<Leader>xl` | Normal | `:BufferLineCloseLeft<CR>` | Close all buffer tabs to the left |
+| `<Leader>xr` | Normal | `:BufferLineCloseRight<CR>` | Close all buffer tabs to the right |
+| `<Leader>xP` | Normal | `:BufferLineGroupClose ungrouped<CR>` | Close non-pinned buffer tabs |
 
 ---
 
@@ -59,10 +59,13 @@ Navigation is unified across Neovim splits and tmux panes via `christoomey/vim-t
 
 | Keybinding | Mode | Action | Description |
 | :--- | :--- | :--- | :--- |
-| `<F6>` | Normal | Native Split Runner | Save, compile, and execute current file in bottom split terminal |
-| `<Leader>mb` | Normal | `compiler dotnet \| make build` | Build current C# .NET solution |
-| `<Leader>mr` | Normal | `dotnet run` | Run C# .NET solution in terminal |
-| `<Leader>mt` | Normal | `dotnet test` | Run C# .NET solution tests in terminal |
+| `<F6>` | Normal | Native Split Runner | Save, compile, and execute current file in bottom split terminal (root-aware) |
+| `<Leader>dr` | Normal | `:Dotnet run<CR>` | Run C# .NET project |
+| `<Leader>db` | Normal | `:Dotnet build<CR>` | Build C# .NET solution or project |
+| `<Leader>dt` | Normal | `:Dotnet testrunner<CR>` | Open interactive floating .NET test runner |
+| `<Leader>ds` | Normal | `:Dotnet secrets<CR>` | Manage .NET User Secrets |
+| `<Leader>do` | Normal | `:Dotnet outdated<CR>` | Audit and update outdated NuGet packages |
+| `<Leader>dn` | Normal | `:Dotnet new<CR>` | Scaffold new .NET project or template |
 | `<Leader>cf` | Normal | `Cake.open({ mode = 'float' })` | Open Cake floating task runner |
 | `<Leader>ct` | Normal | `Cake.toggle()` | Toggle Cake task runner window |
 | `<Leader>cv` | Normal | `Cake.open({ mode = 'splitv' })` | Open Cake vertical split runner |
