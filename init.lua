@@ -90,8 +90,14 @@ vim.keymap.set("n", "<F6>", function()
 		local out_bin = is_win and (basename .. ".exe") or ("./" .. basename)
 		cmd = string.format("cd %s && g++ %s -o %s && %s", escaped_dir, escaped_filename, escaped_base, out_bin)
 	elseif filetype == "cs" then
-		local out_bin = is_win and (basename .. ".exe") or ("./" .. basename)
-		cmd = string.format("cd %s && dotnet run %s", escaped_dir, escaped_filename, escaped_base, out_bin)
+		local proj_root = vim.fs.root(dir, function(name)
+			return name:match("%.csproj$") ~= nil or name:match("%.sln$") ~= nil
+		end)
+		if proj_root then
+			cmd = string.format("cd %s && dotnet run", vim.fn.shellescape(proj_root))
+		else
+			cmd = string.format("cd %s && dotnet run %s", escaped_dir, escaped_filename)
+		end
 	elseif filetype == "java" then
 		cmd = string.format("cd %s && javac %s && java %s", escaped_dir, escaped_filename, escaped_base)
 	elseif filetype == "python" then

@@ -16,32 +16,13 @@ return {
 		lazy = false,
 		dependencies = { "williamboman/mason.nvim" },
 		init = function()
-			local map = vim.keymap.set
-
-			-- Compile/Build keymap using Neovim's compiler infrastructure
-			map("n", "<leader>mb", function()
-				vim.cmd("silent! wa")
-				vim.cmd("compiler dotnet")
-				vim.cmd("make build")
-				vim.cmd("copen")
-			end, { desc = "Dotnet: [M]ake/[B]uild" })
-
-			-- Helper to run commands in horizontal split terminal
-			local function run_dotnet(args)
-				vim.cmd("silent! wa")
-				vim.cmd("botright split | terminal dotnet " .. args)
-				vim.cmd("startinsert")
-			end
-
-			-- Run keymap
-			map("n", "<leader>mr", function()
-				run_dotnet("run")
-			end, { desc = "Dotnet: Run project" })
-
-			-- Test keymap
-			map("n", "<leader>mt", function()
-				run_dotnet("test")
-			end, { desc = "Dotnet: Test project" })
+			-- Register Razor/Blazor filetypes explicitly for Roslyn LSP co-hosting
+			vim.filetype.add({
+				extension = {
+					razor = "razor",
+					cshtml = "razor",
+				},
+			})
 		end,
 		config = function()
 			local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -99,7 +80,13 @@ return {
 			local ok, dap_cs = pcall(require, "dap-cs")
 			local is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
 			local netcoredbg_binary = is_windows and "netcoredbg.exe" or "netcoredbg"
-			local netcoredbg_path = vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "packages", "netcoredbg", netcoredbg_binary)
+			local netcoredbg_path =
+				vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "packages", "netcoredbg", netcoredbg_binary)
+
+			-- Fallback to system netcoredbg binary if Mason package is not installed or unexecutable
+			if vim.fn.executable(netcoredbg_path) ~= 1 and vim.fn.executable("netcoredbg") == 1 then
+				netcoredbg_path = "netcoredbg"
+			end
 
 			if ok then
 				dap_cs.setup({
@@ -109,7 +96,7 @@ return {
 				})
 			end
 
-			-- Enhance dap.configurations.cs with buffer-aware DLL auto-detection and terminal console support
+			-- Enhance dap.configurations.cs with buffer-aware DLL auto-detection, process attachment, and terminal console support
 			local dap_ok, dap = pcall(require, "dap")
 			if dap_ok then
 				local function get_dll_path()
@@ -143,14 +130,29 @@ return {
 					return input_path
 				end
 
-				dap.configurations.cs = dap.configurations.cs or {}
-				local launch_configs = {
+				dap.configurations.cs = {
 					{
 						type = "coreclr",
 						name = "Launch (Integrated Terminal - Console.ReadLine)",
 						request = "launch",
 						console = "integratedTerminal",
 						program = get_dll_path,
+						cwd = "${workspaceFolder}",
+						stopAtEntry = false,
+					},
+					{
+						type = "coreclr",
+						name = "Launch with Arguments (Integrated Terminal)",
+						request = "launch",
+						console = "integratedTerminal",
+						program = get_dll_path,
+						args = function()
+							local args_str = vim.fn.input("Command line arguments: ")
+							if args_str == "" or args_str == nil then
+								return {}
+							end
+							return vim.split(vim.trim(args_str), "%s+")
+						end,
 						cwd = "${workspaceFolder}",
 						stopAtEntry = false,
 					},
@@ -172,25 +174,60 @@ return {
 						cwd = "${workspaceFolder}",
 						stopAtEntry = false,
 					},
+					{
+						type = "coreclr",
+						name = "Launch (Framework / External Step - justMyCode = false)",
+						request = "launch",
+						console = "integratedTerminal",
+						program = get_dll_path,
+						cwd = "${workspaceFolder}",
+						stopAtEntry = false,
+						justMyCode = false,
+					},
+					{
+						type = "coreclr",
+						name = "Attach (Pick Process)",
+						request = "attach",
+						processId = function()
+							return require("dap.utils").pick_process()
+						end,
+						cwd = "${workspaceFolder}",
+					},
 				}
-				for i = #launch_configs, 1, -1 do
-					table.insert(dap.configurations.cs, 1, launch_configs[i])
-				end
 			end
 		end,
 	},
 
-	-- 5. dtrh95/csharp-explorer.nvim setup
+	-- 5. GustavEikaas/easy-dotnet.nvim (Solution, Test Runner, Secrets & Package Management)
 	{
-		"dtrh95/csharp-explorer.nvim",
+		"GustavEikaas/easy-dotnet.nvim",
 		dependencies = {
-			"nvim-tree/nvim-tree.lua",
-			"nvim-tree/nvim-web-devicons",
+			"nvim-lua/plenary.nvim",
+			"mfussenegger/nvim-dap",
+			"folke/snacks.nvim",
 		},
-		cmd = { "CSharpExplorerToggle", "CSharpExplorerFindFile" },
+		cmd = { "Dotnet" },
 		keys = {
-			{ "<leader>cs", "<cmd>CSharpExplorerToggle<cr>", desc = "Toggle C# Explorer" },
+			{ "<leader>dr", "<cmd>Dotnet run<cr>", desc = "Dotnet: Run project" },
+
+			{ "<leader>db", "<cmd>Dotnet build<cr>", desc = "Dotnet: Build solution/project" },
+			{ "<leader>dt", "<cmd>Dotnet testrunner<cr>", desc = "Dotnet: Test Runner UI" },
+			{ "<leader>ds", "<cmd>Dotnet secrets<cr>", desc = "Dotnet: User Secrets" },
+			{ "<leader>do", "<cmd>Dotnet outdated<cr>", desc = "Dotnet: Outdated NuGet Packages" },
+			{ "<leader>dn", "<cmd>Dotnet new<cr>", desc = "Dotnet: New Project/File" },
 		},
-		opts = {},
+		config = function()
+			local ok, easy_dotnet = pcall(require, "easy-dotnet")
+			if not ok then
+				return
+			end
+
+			easy_dotnet.setup({
+				test_runner = {
+					viewmode = "float",
+					enable_buffer_test_execution = true,
+				},
+			})
+		end,
 	},
 }

@@ -91,16 +91,21 @@ Replace command-line git diffs with visual side-by-side comparison panels:
 
 ## 6. C# & .NET Development
 
-### Solution Explorer
+### Solution & Project Management (`easy-dotnet.nvim`)
 
-- Press `<Leader>cs` to toggle the virtual solution explorer.
-- It displays Solution -> Project -> References -> Source files, hiding `bin` and `obj` build directories.
+- `<Leader>dr`: Run .NET project.
+- `<Leader>db`: Build solution or project.
+- `<Leader>dt`: Open floating test runner UI (`viewmode = "float"` with buffer-aware test execution).
+- `<Leader>ds`: Manage .NET User Secrets without leaving Neovim.
+- `<Leader>do`: Audit outdated NuGet packages across dependencies.
+- `<Leader>dn`: Scaffold new .NET projects, solutions, or items from installed templates.
 
-### Build & Run
+### Compilation Runner & Debugging
 
-- `<Leader>mb`: Runs `compiler dotnet | make build` and opens quickfix list.
-- `<Leader>mr`: Spawns a split running `dotnet run`.
-- `<Leader>mt`: Spawns a split running `dotnet test`.
+- `<F6>`: Root-aware compilation runner. Automatically scans upward from active buffer for `.csproj` or `.sln`, changes to the project root directory, and executes `dotnet run` in an isolated bottom terminal split.
+- `<F5>`: Launch active C# project with buffer-aware DLL auto-detection (scans `<projectRoot>/bin/Debug/`, excluding `.deps.` and `.test.` files).
+- `<Leader>du`: Toggle DAP UI.
+- Inline variable states and stepping stop reasons are rendered directly via `nvim-dap-virtual-text`.
 
 ---
 

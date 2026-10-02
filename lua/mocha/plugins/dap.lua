@@ -4,6 +4,7 @@ return {
     dependencies = {
       'rcarriga/nvim-dap-ui',
       'nvim-neotest/nvim-nio',
+      'theHamsta/nvim-dap-virtual-text',
       'williamboman/mason.nvim',
       'jay-babu/mason-nvim-dap.nvim',
     },
@@ -91,6 +92,7 @@ return {
       end
       dap.defaults.fallback.force_external_terminal = false
       dap.defaults.fallback.terminal_win_cmd = 'belowright 12new'
+      dap.defaults.fallback.focus_terminal = true
 
       -- 5. FIXING ADAPTERS: Resolve strings synchronously *during* initialization block
       local ok, registry = pcall(require, "mason-registry")
@@ -127,14 +129,23 @@ return {
       -- 6. C/C++ Launch Matrix
       local c_cpp_configurations = {
         {
-          name = "Launch (CodeLLDB Built-in Terminal Integration)",
+          name = "Launch (CodeLLDB Integrated Split Terminal)",
           type = "codelldb",
           request = "launch",
           program = get_program_path,
           args = get_args,
           cwd = "${workspaceFolder}",
           stopOnEntry = false,
-          terminal = "external",
+          terminal = "integrated",
+        },
+        {
+          name = "Attach to Process (CodeLLDB)",
+          type = "codelldb",
+          request = "attach",
+          pid = function()
+            return require("dap.utils").pick_process()
+          end,
+          cwd = "${workspaceFolder}",
         },
         {
           name = "Launch (GDB External Popup Window)",
@@ -179,11 +190,22 @@ return {
       vim.keymap.set('n', '<leader>du', dapui.toggle, { desc = 'Debug: Toggle UI' })
 
       dapui.setup()
+      local ok_vt, dap_vt = pcall(require, "nvim-dap-virtual-text")
+      if ok_vt then
+        dap_vt.setup({
+          commented = true,
+          highlight_changed_variables = true,
+          show_stop_reason = true,
+        })
+      end
+
       dap.listeners.after.event_initialized['dapui_config'] = dapui.open
       dap.listeners.before.event_terminated['dapui_config'] = function()
+        dapui.close()
         vim.notify("Debug Session Terminated")
       end
       dap.listeners.before.event_exited['dapui_config'] = function()
+        dapui.close()
         vim.notify("Debug Session Terminated")
       end
 

@@ -30,7 +30,7 @@ Formatters are managed in [lua/mocha/plugins/formatting.lua](file:///home/mocha/
 | Language / Filetype | Primary Formatter | Fallback | Command Execution |
 | :--- | :--- | :--- | :--- |
 | **Lua** | `stylua` | LSP format | Managed via Mason |
-| **C# (.NET)** | `csharpier` | LSP format | Resolves `~/.dotnet/tools/dotnet-csharpier` |
+| **C# (.NET)** | `csharpier` | LSP format | Resolves Mason bin, `~/.dotnet/tools`, or system `$PATH` |
 | **JavaScript / TS** | `prettierd` | `prettier` | Daemonized formatting for zero latency |
 | **JSON / JSONC** | `prettierd` | `prettier` | Standardized formatting |
 | **HTML / CSS** | `prettierd` | `prettier` | Web markup formatting |
