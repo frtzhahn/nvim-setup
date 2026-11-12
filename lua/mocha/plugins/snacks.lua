@@ -57,13 +57,6 @@ return {
 				desc = "[ ] Find existing buffers",
 			},
 			{
-				"<leader><leader>",
-				function()
-					Snacks.picker.buffers()
-				end,
-				desc = "[ ] Find existing buffers",
-			},
-			{
 				"<leader>s.",
 				function()
 					Snacks.picker.recent()

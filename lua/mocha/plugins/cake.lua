@@ -1,39 +1,3 @@
--- return {
---   {
---     "aikhe/cake.nvim",
---     dependencies = { "nvzone/volt" }, -- Essential dependency
---     cmd = { "CakeToggle", "CakeFloat" }, -- Lazy load on these commands
---
---     -- Configuration (Optional: defaults are usually fine)
---     opts = {
---       title = " cake.nvim",
---       size = { h = 60, w = 50 },
---       mappings = {
---         edit_commands = "m",
---         new_tab = "n",
---         rerun = "r",
---         kill_tab = "x",
---         next_tab = "<C-n>",
---         prev_tab = "<C-p>",
---       },
---     },
---
---     -- Keybindings to launch the plugin
---     keys = {
---       {
---         "<leader>cf",
---         function() require("cake").open_float() end,
---         desc = "Cake Float",
---       },
---       {
---         "<leader>ct",
---         function() require("cake").toggle() end,
---         desc = "Cake Toggle",
---       },
---     },
---   }
--- }
-
 return {
   {
     "aikhe/cake.nvim",
