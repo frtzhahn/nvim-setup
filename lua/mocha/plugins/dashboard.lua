@@ -1,33 +1,11 @@
 return {
 	{
 		"goolord/alpha-nvim",
+		event = "VimEnter",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			local alpha = require("alpha")
 			local dashboard = require("alpha.themes.dashboard")
-
-			-- -- DRY helper function to compile a centered size-adaptive header
-			-- local function get_header(width)
-			--   if width >= 150 then
-			--     return {
-			--       [[██╗    ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗    ██████╗  █████╗  ██████╗██╗  ██╗    ███╗   ███╗ ██████╗  ██████╗██╗  ██╗ █████╗]],
-			--       [[██║    ██║██╔════╝██║     ██╔════╝██╔═══██╗████╗ ████║██╔════╝    ██╔══██╗██╔══██╗██╔════╝██║ ██╔╝    ████╗ ████║██╔═══██╗██╔════╝██║  ██║██╔══██╗]],
-			--       [[██║ █╗ ██║█████╗  ██║     ██║     ██║   ██║██╔████╔██║█████╗      ██████╔╝███████║██║     █████╔╝     ██╔████╔██║██║   ██║██║     ███████║███████║]],
-			--       [[██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝      ██╔══██╗██╔══██║██║     ██╔═██╗     ██║╚██╔╝██║██║   ██║██║     ██╔══██║██╔══██║]],
-			--       [[╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗    ██████╔╝██║  ██║╚██████╗██║  ██╗    ██║ ╚═╝ ██║╚██████╔╝╚██████╗██║  ██║██║  ██║]],
-			--       [[ ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝    ╚═════╝ ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝    ╚═╝     ╚═╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝]],
-			--     }
-			--   else
-			--     return {
-			--       [[      ███╗   ███╗ ██████╗  ██████╗██╗  ██╗ █████╗      ]],
-			--       [[      ████╗ ████║██╔═══██╗██╔════╝██║  ██║██╔══██╗     ]],
-			--       [[      ██╔████╔██║██║   ██║██║     ███████║███████║     ]],
-			--       [[      ██║╚██╔╝██║██║   ██║██║     ██╔══██║██╔══██║     ]],
-			--       [[      ██║ ╚═╝ ██║╚██████╔╝╚██████╗██║  ██║██║  ██║     ]],
-			--       [[      ╚═╝     ╚═╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝     ]],
-			--     }
-			--   end
-			-- end
 
 			local function get_header(width)
 				if width >= 150 then
@@ -84,20 +62,30 @@ return {
 				-- dashboard.button("q", "  Quit Neovim", "<cmd>qa<cr>"),
 			}
 
-			-- Custom dynamic footer displays only a single, sleek load time status
-			local stats = require("lazy").stats()
-			local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-			dashboard.section.footer.val = "Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms"
-
 			dashboard.section.header.opts.hl = "AlphaHeader"
 			dashboard.section.buttons.opts.hl = "AlphaButtons"
 			dashboard.section.footer.opts.hl = "AlphaFooter"
 
+			local alpha_group = vim.api.nvim_create_augroup("mocha-alpha-dashboard", { clear = true })
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "LazyVimStarted",
+				group = alpha_group,
+				callback = function()
+					local stats = require("lazy").stats()
+					local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+					dashboard.section.footer.val = "Neovim loaded " .. stats.loaded .. "/" .. stats.count .. " plugins in " .. ms .. "ms"
+					pcall(alpha.redraw)
+				end,
+			})
+
 			-- Auto-resize redraw hook: Swaps banner and centers version on the fly when window is resized!
 			vim.api.nvim_create_autocmd("VimResized", {
+				group = alpha_group,
 				callback = function()
-					dashboard.section.header.val = get_header(vim.o.columns)
-					alpha.redraw()
+					if vim.bo.filetype == "alpha" then
+						dashboard.section.header.val = get_header(vim.o.columns)
+						alpha.redraw()
+					end
 				end,
 			})
 
