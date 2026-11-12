@@ -19,12 +19,3 @@ return {
 		},
 	},
 }
-
--- return {
---   "aikhe/wrapped.nvim",
---   dependencies = { "nvzone/volt", "nvim-lua/plenary.nvim" },
---   cmd = { "NvimWrapped" },
---   opts = {
---     path = "/home/mocha/Documents/programming/coding/java-programs"
---   },
--- }
