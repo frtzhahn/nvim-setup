@@ -2,38 +2,29 @@
 -- My Own Keymaps
 -- =============================
 
---vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
---vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
---vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
---vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set("n", "=", "<cmd>vertical resize +5<cr>", { desc = "Increase window width" })
+vim.keymap.set("n", "-", "<cmd>vertical resize -5<cr>", { desc = "Decrease window width" })
+vim.keymap.set("n", "<A-=>", "<cmd>horizontal resize +2<cr>", { desc = "Increase window height (Alt+=)" })
+vim.keymap.set("n", "<M-->", "<cmd>horizontal resize -2<cr>", { desc = "Decrease window height (Alt+-)" })
 
-vim.keymap.set("n", "=", [[<cmd>vertical resize +5<cr>]]) -- make the window biger horizontally
-vim.keymap.set("n", "-", [[<cmd>vertical resize -5<cr>]]) -- make the window smaller horizontally
-vim.keymap.set("n", "<A-=>", [[<cmd>horizontal resize +2<cr>]]) -- make the window bigger vertically by pressing shift and =
-vim.keymap.set("n", "<M-->", [[<cmd>horizontal resize -2<cr>]]) -- make the window smaller vertically by pressing shift and -
-
--- K, J as 5k,5j
-vim.keymap.set("n", "J", "5j", { noremap = true, silent = true })
-vim.keymap.set("n", "K", "5k", { noremap = true, silent = true })
-vim.keymap.set("v", "J", "5j", { noremap = true, silent = true })
-vim.keymap.set("v", "K", "5k", { noremap = true, silent = true })
+-- K, J as 5k, 5j
+vim.keymap.set({ "n", "v" }, "J", "5j", { noremap = true, silent = true, desc = "Move cursor 5 lines down" })
+vim.keymap.set({ "n", "v" }, "K", "5k", { noremap = true, silent = true, desc = "Move cursor 5 lines up" })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking (copying) text",
 	group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
 	callback = function()
-		vim.highlight.on_yank()
+		vim.hl.on_yank()
 	end,
 })
 
--- vim.keymap.set('n', '<leader>pv', '<Cmd>Ex<CR>', { silent = true })
+vim.keymap.set("n", "<leader>pf", "<cmd>Neotree float<cr>", { desc = "Explorer: Neo-tree float" })
+vim.keymap.set("n", "<leader>pt", "<cmd>Neotree left<cr>", { desc = "Explorer: Neo-tree left sidebar" })
+vim.keymap.set("n", "<leader>pc", "<cmd>Neotree toggle<cr>", { desc = "Explorer: Neo-tree toggle" })
 
-vim.keymap.set("n", "<leader>pf", [[<cmd>Neotree float<cr>]])
-vim.keymap.set("n", "<leader>pt", [[<cmd>Neotree left<cr>]])
-vim.keymap.set("n", "<leader>pc", [[<cmd>Neotree toggle<cr>]])
-
-vim.keymap.set("n", "<leader>pv", "<Cmd>Oil<CR>", { silent = true })
-vim.keymap.set("n", "<leader>pe", "<Cmd>Oil --float<CR>", { silent = true })
+vim.keymap.set("n", "<leader>pv", "<Cmd>Oil<CR>", { silent = true, desc = "Explorer: Open Oil buffer" })
+vim.keymap.set("n", "<leader>pe", "<Cmd>Oil --float<CR>", { silent = true, desc = "Explorer: Open Oil float" })
 
 -- [[ Minty - Color Tools ]]
 -- Open Shades - color picker with shade/tint variations
@@ -58,7 +49,7 @@ vim.keymap.set("n", "<leader>wl", "<C-w>l", { desc = "Move focus window right" }
 vim.keymap.set("n", "<leader>wk", "<C-w>k", { desc = "Move focus window up" })
 vim.keymap.set("n", "<leader>wj", "<C-w>j", { desc = "Move focus window down" })
 vim.keymap.set("n", "<leader>q", ":close<CR>", { silent = true, desc = "Close current split window" })
-vim.keymap.set("n", "<leader>hs", ":new<CR>", { silent = true, desc = "Open empty horizontal split" })
+vim.keymap.set("n", "<leader>ws", "<cmd>new<CR>", { silent = true, desc = "Open empty horizontal split" })
 vim.keymap.set("n", "<leader>vs", ":vnew<CR>", { silent = true, desc = "Open empty vertical split" })
 vim.keymap.set("n", "<leader>ht", ":split | terminal<CR>", { silent = true, desc = "Open horizontal terminal split" })
 vim.keymap.set("n", "<leader>tv", ":vsplit | terminal<CR>", { silent = true, desc = "Open vertical terminal split" })
