@@ -59,7 +59,7 @@ return {
 
 				-- Toggles
 				map("n", "<leader>tb", gitsigns.toggle_current_line_blame, { desc = "[T]oggle inline git [B]lame" })
-				map("n", "<leader>td", gitsigns.toggle_deleted, { desc = "[T]oggle git [D]eleted lines" })
+				map("n", "<leader>tD", gitsigns.toggle_deleted, { desc = "[T]oggle git [D]eleted lines" })
 			end,
 		},
 	},

@@ -3,18 +3,6 @@ return {
 	event = "VeryLazy",
 	keys = {
 		{
-			"<leader>xx",
-			function()
-				local ok, snacks = pcall(require, "snacks")
-				if ok and snacks.bufdelete then
-					snacks.bufdelete()
-				else
-					vim.cmd("bdelete")
-				end
-			end,
-			desc = "Delete Current Buffer",
-		},
-		{
 			"<leader>xd",
 			function()
 				local ok, snacks = pcall(require, "snacks")
