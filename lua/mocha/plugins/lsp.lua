@@ -5,17 +5,13 @@ return {
     -- used for completion, annotations and signatures of Neovim apis
     'folke/lazydev.nvim',
     ft = 'lua',
-    opts = {
-      library = {
-        -- Load luvit types when the `vim.uv` word is found
-        { path = 'luvit-meta/library', words = { 'vim%.uv' } },
-      },
-    },
+    opts = {},
   },
-  { 'Bilal2453/luvit-meta', lazy = true },
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
+    event = { 'BufReadPre', 'BufNewFile' },
+    cmd = { 'LspInfo', 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonUpdate', 'MasonToolsInstall', 'MasonToolsUpdate' },
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
@@ -24,7 +20,7 @@ return {
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim', event = 'LspAttach', opts = {} },
 
       -- Allows extra capabilities provided by nvim-cmp
       'hrsh7th/cmp-nvim-lsp',
@@ -101,6 +97,7 @@ return {
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+          map('gh', vim.lsp.buf.hover, '[G]oto [H]over Documentation')
 
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
@@ -123,7 +120,8 @@ return {
             })
 
             vim.api.nvim_create_autocmd('LspDetach', {
-              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
+              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = false }),
+              buffer = event.buf,
               callback = function(event2)
                 vim.lsp.buf.clear_references()
                 vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
@@ -144,128 +142,57 @@ return {
         end,
       })
 
-      -- Change diagnostic symbols in the sign column (gutter)
-      -- if vim.g.have_nerd_font then
-      --   local signs = { ERROR = '', WARN = '', INFO = '', HINT = '' }
-      --   local diagnostic_signs = {}
-      --   for type, icon in pairs(signs) do
-      --     diagnostic_signs[vim.diagnostic.severity[type]] = icon
-      --   end
-      --   vim.diagnostic.config { signs = { text = diagnostic_signs } }
-      -- end
-
-      -- LSP servers and clients are able to communicate to each other what features they support.
-      --  By default, Neovim doesn't support everything that is in the LSP specification.
-      --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
-      --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
-
-      -- Enable the following language servers
-      --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
-      --
-      --  Add any additional override configuration in the following tables. Available keys are:
-      --  - cmd (table): Override the default command used to start the server
-      --  - filetypes (table): Override the default list of associated filetypes for the server
-      --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
-      --  - settings (table): Override the default settings passed when initializing the server.
-      --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-
-      local vue_language_server_path = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server'
-      local tsserver_filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' }
-      local vue_plugin = {
-        name = '@vue/typescript-plugin',
-        location = vue_language_server_path,
-        languages = { 'vue' },
-        configNamespace = 'typescript',
-      }
-
-      vim.lsp.config('vtsls', {
-        settings = {
-          vtsls = {
-            tsserver = {
-              globalPlugins = {
-                vue_plugin,
-              },
-            },
-          },
-        },
-        filetypes = tsserver_filetypes,
+      -- Broadcast completion capabilities globally to all LSP clients via Neovim 0.12 wildcard config
+      vim.lsp.config('*', {
+        capabilities = require('cmp_nvim_lsp').default_capabilities(),
       })
+
+      local mason_pkgs = vim.fn.stdpath('data') .. '/mason/packages'
+      local tsserver_path = mason_pkgs .. '/typescript-language-server/node_modules/typescript/lib'
 
       vim.lsp.config('vue_ls', {
         cmd = { 'vue-language-server', '--stdio' },
         init_options = {
           typescript = {
-            tsdk = 'C:\\Users\\aikhe\\AppData\\Roaming\\npm\\node_modules\\typescript\\lib',
+            tsdk = tsserver_path,
           },
         },
       })
 
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
-        -- rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-        --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`ts_ls`) will work just fine
-        ts_ls = {
-          -- init_options = {
-          --   preferences = {
-          --     disableSuggestions = true,
-          --     includeCompletionsForModuleExports = false,
-          --     includeCompletionsForImportStatements = false,
-          --   },
-          -- },
-          -- settings = {
-          --   typescript = {
-          --     suggestionActions = {
-          --       enabled = false,
-          --     },
-          --     preferences = {
-          --       disableSuggestions = true,
-          --     },
-          --   },
-          --   javascript = {
-          --     suggestionActions = {
-          --       enabled = false,
-          --     },
-          --     preferences = {
-          --       disableSuggestions = true,
-          --     },
-          --   },
-          -- },
-        },
+        ts_ls = {},
         tailwindcss = {},
         cssls = {},
         pyright = {},
         html = {},
 
-				lemminx = {
+        lemminx = {
           filetypes = { 'xml', 'xsd', 'xsl', 'xslt', 'svg', 'fxml' },
         },
 
         lua_ls = {
-          -- cmd = { ... },
-          -- filetypes = { ... },
-          -- capabilities = {},
-          root_dir = function(fname)
-            local root = require('lspconfig.util').root_pattern('.git', 'stylua.toml', '.stylua.toml', 'selene.toml', 'selene.yml', '.luarc.json', '.luarc.jsonc', 'init.lua')(fname)
-            if root == vim.env.HOME then
-              return nil
+          root_dir = function(bufnr, on_dir)
+            local fname = vim.api.nvim_buf_get_name(bufnr)
+            local root = vim.fs.root(fname, {
+              '.git',
+              'stylua.toml',
+              '.stylua.toml',
+              'selene.toml',
+              'selene.yml',
+              '.luarc.json',
+              '.luarc.jsonc',
+              'init.lua',
+            })
+            local dir = root or vim.fs.dirname(fname)
+            if dir and dir ~= vim.env.HOME then
+              on_dir(dir)
             end
-            return root
           end,
           settings = {
             Lua = {
               completion = {
                 callSnippet = 'Replace',
               },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
@@ -275,21 +202,7 @@ return {
         eslint = {},
         dockerls = {},
         clangd = {},
-        -- jdtls = {},
       }
-
-      -- Ensure the servers and tools above are installed
-      --  To check the current status of installed tools and/or manually install
-      --  other tools, you can run
-      --    :Mason
-      --
-      --  You can press `g?` for help in this menu.
-      local mason_opts = {}
-      local lazy_config_ok, lazy_config = pcall(require, 'lazy.core.config')
-      if lazy_config_ok and lazy_config.plugins['mason.nvim'] then
-        mason_opts = lazy_config.plugins['mason.nvim'].opts or {}
-      end
-      require('mason').setup(mason_opts)
 
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
@@ -298,17 +211,20 @@ return {
         'stylua', -- Used to format Lua code
         'prettierd',
         'prettier',
-				'jdtls',
-				'java-debug-adapter',
-				'java-test',
+        'jdtls',
+        'java-debug-adapter',
+        'java-test',
       })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+      require('mason-tool-installer').setup {
+        ensure_installed = ensure_installed,
+        run_on_start = false,
+      }
 
-      -- 1. Manually loop over custom servers to register settings natively
+      -- 1. Register custom server overrides natively
       for server_name, server_config in pairs(servers) do
-        local server = server_config or {}
-        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-        vim.lsp.config(server_name, server)
+        if next(server_config) ~= nil then
+          vim.lsp.config(server_name, server_config)
+        end
       end
 
       -- 2. Setup mason-lspconfig and exclude jdtls from automatic activation
