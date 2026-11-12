@@ -26,15 +26,11 @@ return {
 
       -- Find debug/test bundles if they exist
       local bundles = {}
-      local java_dbg_path = vim.fn.glob(mason_path .. '/packages/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar', true)
-      if java_dbg_path ~= "" then
-        table.insert(bundles, java_dbg_path)
-      end
+      local java_dbg_jars = vim.fn.glob(mason_path .. '/packages/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar', true, true)
+      vim.list_extend(bundles, java_dbg_jars)
 
-      local java_test_path = vim.fn.glob(mason_path .. '/packages/java-test/extension/server/com.microsoft.java.test.plugin-*.jar', true)
-      if java_test_path ~= "" then
-        table.insert(bundles, java_test_path)
-      end
+      local java_test_jars = vim.fn.glob(mason_path .. '/packages/java-test/extension/server/*.jar', true, true)
+      vim.list_extend(bundles, java_test_jars)
 
       local config = {
         cmd = {
@@ -99,6 +95,7 @@ return {
 
     -- Run setup_jdtls when opening a Java file
     vim.api.nvim_create_autocmd('FileType', {
+      group = vim.api.nvim_create_augroup('mocha-jdtls-setup', { clear = true }),
       pattern = 'java',
       callback = setup_jdtls,
     })
