@@ -1,6 +1,18 @@
 return {
   {
     'mfussenegger/nvim-dap',
+    keys = {
+      { '<F5>', function() require('dap').continue() end, desc = 'Debug: Start/Continue' },
+      { '<F1>', function() require('dap').step_into() end, desc = 'Debug: Step Into' },
+      { '<F2>', function() require('dap').step_over() end, desc = 'Debug: Step Over' },
+      { '<F3>', function() require('dap').step_out() end, desc = 'Debug: Step Out' },
+      { '<F4>', function() require('dap').terminate() end, desc = 'Debug: Terminate' },
+      { '<leader>b', function() require('dap').toggle_breakpoint() end, desc = 'Debug: Toggle Breakpoint' },
+      { '<leader>B', function() require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = 'Debug: Set Conditional Breakpoint' },
+      { '<leader>ku', function() require('dap').up() end, desc = 'Debug: Up Stack Frame' },
+      { '<leader>kd', function() require('dap').down() end, desc = 'Debug: Down Stack Frame' },
+      { '<leader>du', function() require('dapui').toggle() end, desc = 'Debug: Toggle UI' },
+    },
     dependencies = {
       'rcarriga/nvim-dap-ui',
       'nvim-neotest/nvim-nio',
@@ -94,22 +106,8 @@ return {
       dap.defaults.fallback.terminal_win_cmd = 'belowright 12new'
       dap.defaults.fallback.focus_terminal = true
 
-      -- 5. FIXING ADAPTERS: Resolve strings synchronously *during* initialization block
-      local ok, registry = pcall(require, "mason-registry")
-      local codelldb_path = ""
-      
-      if ok and registry.has_package("codelldb") then
-        local pkg = registry.get_package("codelldb")
-        local base_path = pkg:get_install_path()
-        if is_windows then
-          codelldb_path = base_path .. "/extension/adapter/codelldb.exe"
-        else
-          codelldb_path = base_path .. "/extension/adapter/codelldb"
-        end
-      else
-        -- High-resilient fallback if mason has not synced index yet
-        codelldb_path = vim.fn.stdpath("data") .. (is_windows and "/mason/bin/codelldb.cmd" or "/mason/bin/codelldb")
-      end
+      -- 5. Resolve codelldb path via Mason bin symlink
+      local codelldb_path = vim.fn.stdpath("data") .. (is_windows and "/mason/bin/codelldb.cmd" or "/mason/bin/codelldb")
 
       dap.adapters.codelldb = {
         type = 'server',
@@ -175,20 +173,7 @@ return {
         }
       end
 
-      -- 8. Keymaps & UI Listeners
-      vim.keymap.set('n', '<F5>', dap.continue, { desc = 'Debug: Start/Continue' })
-      vim.keymap.set('n', '<F1>', dap.step_into, { desc = 'Debug: Step Into' })
-      vim.keymap.set('n', '<F2>', dap.step_over, { desc = 'Debug: Step Over' })
-      vim.keymap.set('n', '<F3>', dap.step_out, { desc = 'Debug: Step Out' })
-      vim.keymap.set('n', '<F4>', dap.terminate, { desc = 'Debug: Terminate' })
-      vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
-      vim.keymap.set('n', '<leader>B', function()
-        dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
-      end, { desc = 'Debug: Set Conditional Breakpoint' })
-      vim.keymap.set('n', '<leader>ku', dap.up, { desc = 'Debug: Up Stack Frame' })
-      vim.keymap.set('n', '<leader>kd', dap.down, { desc = 'Debug: Down Stack Frame' })
-      vim.keymap.set('n', '<leader>du', dapui.toggle, { desc = 'Debug: Toggle UI' })
-
+      -- 8. UI Listeners
       dapui.setup()
       local ok_vt, dap_vt = pcall(require, "nvim-dap-virtual-text")
       if ok_vt then
@@ -209,23 +194,14 @@ return {
         vim.notify("Debug Session Terminated")
       end
 
-			-- 9. Visual Enhancements (Clean ASCII/Unicode Style)
-			   vim.api.nvim_set_hl(0, 'DapBreakpoint', { ctermbg = 0, fg = '#e06c75' }) -- Soft red
-			   vim.api.nvim_set_hl(0, 'DapLogPoint', { ctermbg = 0, fg = '#61afef' })   -- Light blue
-			   vim.api.nvim_set_hl(0, 'DapStopped', { ctermbg = 0, fg = '#98c379', bold = true }) -- Green
+      -- 9. Visual Enhancements (Clean ASCII/Unicode Style)
+      vim.api.nvim_set_hl(0, 'DapBreakpoint', { ctermbg = 0, fg = '#e06c75' }) -- Soft red
+      vim.api.nvim_set_hl(0, 'DapLogPoint', { ctermbg = 0, fg = '#61afef' })   -- Light blue
+      vim.api.nvim_set_hl(0, 'DapStopped', { ctermbg = 0, fg = '#98c379', bold = true }) -- Green
 
-			   vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Simple clean dot
-			   vim.fn.sign_define('DapBreakpointCondition', { text = '', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Hollow dot
-			   vim.fn.sign_define('DapStopped', { text = '▶', texthl = 'DapStopped', linehl = 'Visual', numhl = 'DapStopped' }) -- Solid pointer arrow
-
-			-- alternative option if no nerd font is configured
-				 --  vim.api.nvim_set_hl(0, 'DapBreakpoint', { ctermbg = 0, fg = '#992525' })
-				 --  vim.api.nvim_set_hl(0, 'DapLogPoint', { ctermbg = 0, fg = '#61afef' })
-				 --  vim.api.nvim_set_hl(0, 'DapStopped', { ctermbg = 0, fg = '#98c379', bold = true })
-				 --
-				 -- vim.fn.sign_define('DapBreakpoint', { text = 'B', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Filled circle
-				 --  vim.fn.sign_define('DapBreakpointCondition', { text = 'BC', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Target/Nested circle
-				 --  vim.fn.sign_define('DapStopped', { text = '󰁕', texthl = 'DapStopped', linehl = 'Visual', numhl = 'DapStopped' }) -- Clean right arrow
+      vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Simple clean dot
+      vim.fn.sign_define('DapBreakpointCondition', { text = '', texthl = 'DapBreakpoint', linehl = '', numhl = '' }) -- Hollow dot
+      vim.fn.sign_define('DapStopped', { text = '▶', texthl = 'DapStopped', linehl = 'Visual', numhl = 'DapStopped' }) -- Solid pointer arrow
     end,
   },
 }
