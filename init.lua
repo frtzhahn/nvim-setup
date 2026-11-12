@@ -1,15 +1,3 @@
--- Polyfill for Telescope/Treesitter compatibility in Neovim 0.12+
-if not vim.treesitter.language.ft_to_lang then
-	vim.treesitter.language.ft_to_lang = function(ft)
-		return vim.treesitter.language.get_lang(ft) or ft
-	end
-end
-if not vim.treesitter.ft_to_lang then
-	vim.treesitter.ft_to_lang = function(ft)
-		return vim.treesitter.language.get_lang(ft) or ft
-	end
-end
-
 -- Automatically set the compiler environment variable for tree-sitter CLI on Windows
 if vim.fn.has("win32") == 1 then
 	-- If cl.exe is not in PATH, but gcc is available, fall back to gcc
@@ -84,10 +72,10 @@ vim.keymap.set("n", "<F6>", function()
 	local cmd = nil
 
 	if filetype == "c" then
-		local out_bin = is_win and (basename .. ".exe") or ("./" .. basename)
-		cmd = string.format("cd %s && gcc %s -o %s && %s", escaped_dir, escaped_filename, escaped_base, out_bin)
+		local out_bin = vim.fn.shellescape(is_win and (basename .. ".exe") or ("./" .. basename))
+		cmd = string.format("cd %s && gcc -Wall -Wextra -std=c11 -g %s -o %s && %s", escaped_dir, escaped_filename, escaped_base, out_bin)
 	elseif filetype == "cpp" then
-		local out_bin = is_win and (basename .. ".exe") or ("./" .. basename)
+		local out_bin = vim.fn.shellescape(is_win and (basename .. ".exe") or ("./" .. basename))
 		cmd = string.format("cd %s && g++ %s -o %s && %s", escaped_dir, escaped_filename, escaped_base, out_bin)
 	elseif filetype == "cs" then
 		local proj_root = vim.fs.root(dir, function(name)
@@ -115,7 +103,7 @@ vim.keymap.set("n", "<F6>", function()
 	elseif filetype == "go" then
 		cmd = string.format("go run %s", escaped_file)
 	elseif filetype == "rust" then
-		local out_bin = is_win and (basename .. ".exe") or ("./" .. basename)
+		local out_bin = vim.fn.shellescape(is_win and (basename .. ".exe") or ("./" .. basename))
 		cmd = string.format("cd %s && rustc %s -o %s && %s", escaped_dir, escaped_filename, escaped_base, out_bin)
 	else
 		vim.notify("Unsupported filetype for quick runner: " .. filetype, vim.log.levels.WARN)
