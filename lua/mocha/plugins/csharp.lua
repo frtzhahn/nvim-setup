@@ -13,7 +13,7 @@ return {
 	-- 2. seblyng/roslyn.nvim setup
 	{
 		"seblyng/roslyn.nvim",
-		lazy = false,
+		ft = { "cs", "razor" },
 		dependencies = { "williamboman/mason.nvim" },
 		init = function()
 			-- Register Razor/Blazor filetypes explicitly for Roslyn LSP co-hosting
@@ -25,15 +25,8 @@ return {
 			})
 		end,
 		config = function()
-			local capabilities = vim.lsp.protocol.make_client_capabilities()
-			local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-			if ok then
-				capabilities = vim.tbl_deep_extend("force", capabilities, cmp_nvim_lsp.default_capabilities())
-			end
-
 			-- Configure Roslyn LSP settings via Neovim 0.12+ vim.lsp.config
 			vim.lsp.config("roslyn", {
-				capabilities = capabilities,
 				settings = {
 					["csharp|inlay_hints"] = {
 						csharp_enable_inlay_hints_for_implicit_object_creation = true,
@@ -75,6 +68,7 @@ return {
 	-- 4. nicholasmata/nvim-dap-cs setup
 	{
 		"nicholasmata/nvim-dap-cs",
+		ft = { "cs" },
 		dependencies = { "mfussenegger/nvim-dap" },
 		config = function()
 			local ok, dap_cs = pcall(require, "dap-cs")
@@ -201,6 +195,7 @@ return {
 	-- 5. GustavEikaas/easy-dotnet.nvim (Solution, Test Runner, Secrets & Package Management)
 	{
 		"GustavEikaas/easy-dotnet.nvim",
+		ft = { "cs", "csproj", "sln", "razor" },
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"mfussenegger/nvim-dap",
@@ -212,7 +207,7 @@ return {
 
 			{ "<leader>db", "<cmd>Dotnet build<cr>", desc = "Dotnet: Build solution/project" },
 			{ "<leader>dt", "<cmd>Dotnet testrunner<cr>", desc = "Dotnet: Test Runner UI" },
-			{ "<leader>ds", "<cmd>Dotnet secrets<cr>", desc = "Dotnet: User Secrets" },
+			{ "<leader>dS", "<cmd>Dotnet secrets<cr>", desc = "Dotnet: User Secrets" },
 			{ "<leader>do", "<cmd>Dotnet outdated<cr>", desc = "Dotnet: Outdated NuGet Packages" },
 			{ "<leader>dn", "<cmd>Dotnet new<cr>", desc = "Dotnet: New Project/File" },
 		},
