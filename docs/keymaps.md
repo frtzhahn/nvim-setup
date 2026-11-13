@@ -17,7 +17,7 @@ Navigation is unified across Neovim splits and tmux panes via `christoomey/vim-t
 | `<C-l>` | Normal | `TmuxNavigateRight` | Focus right window / tmux pane |
 | `<C-\>` | Normal | `TmuxNavigatePrevious` | Focus previous window / tmux pane |
 | `<Leader>q` | Normal | `:close<CR>` | Close current split |
-| `<Leader>hs` | Normal | `:new<CR>` | Open empty horizontal split |
+| `<Leader>ws` | Normal | `:new<CR>` | Open empty horizontal split (`<Leader>hs` is reserved for Gitsigns stage hunk) |
 | `<Leader>vs` | Normal | `:vnew<CR>` | Open empty vertical split |
 | `<Leader>ht` | Normal | `:split \| terminal<CR>` | Open horizontal terminal split |
 | `<Leader>tv` | Normal | `:vsplit \| terminal<CR>` | Open vertical terminal split |
@@ -44,7 +44,7 @@ Navigation is unified across Neovim splits and tmux panes via `christoomey/vim-t
 | `<Leader>pc` | Normal | `:Neotree toggle<CR>` | Toggle Neo-tree explorer |
 | `<Leader>pv` | Normal | `:Oil<CR>` | Open Oil directory editor |
 | `<Leader>pe` | Normal | `:Oil --float<CR>` | Open Oil floating directory editor |
-| `<Leader>xx` / `<Leader>xd` | Normal | `snacks.bufdelete()` | Delete current buffer without altering window layout |
+| `<Leader>xd` | Normal | `snacks.bufdelete()` | Delete current buffer without altering window layout (`<Leader>xx` is reserved for Trouble diagnostics toggle) |
 | `<S-h>` | Normal | `:BufferLineCyclePrev<CR>` | Cycle to previous buffer tab |
 | `<S-l>` | Normal | `:BufferLineCycleNext<CR>` | Cycle to next buffer tab |
 | `<Leader>xp` | Normal | `:BufferLineTogglePin<CR>` | Pin/unpin current buffer tab |
@@ -63,7 +63,7 @@ Navigation is unified across Neovim splits and tmux panes via `christoomey/vim-t
 | `<Leader>dr` | Normal | `:Dotnet run<CR>` | Run C# .NET project |
 | `<Leader>db` | Normal | `:Dotnet build<CR>` | Build C# .NET solution or project |
 | `<Leader>dt` | Normal | `:Dotnet testrunner<CR>` | Open interactive floating .NET test runner |
-| `<Leader>ds` | Normal | `:Dotnet secrets<CR>` | Manage .NET User Secrets |
+| `<Leader>dS` | Normal | `:Dotnet secrets<CR>` | Manage .NET User Secrets (`<Leader>ds` is reserved for LSP document symbols) |
 | `<Leader>do` | Normal | `:Dotnet outdated<CR>` | Audit and update outdated NuGet packages |
 | `<Leader>dn` | Normal | `:Dotnet new<CR>` | Scaffold new .NET project or template |
 | `<Leader>cf` | Normal | `Cake.open({ mode = 'float' })` | Open Cake floating task runner |
@@ -107,6 +107,7 @@ These mappings activate automatically when an LSP attaches to a buffer:
 
 | Keybinding | Mode | Action | Description |
 | :--- | :--- | :--- | :--- |
+| `gh` | Normal | `vim.lsp.buf.hover` | Display hover documentation for symbol under cursor (since `K` is mapped to `5k`) |
 | `gd` | Normal | `vim.lsp.buf.definition` | Jump to symbol definition |
 | `gD` | Normal | `vim.lsp.buf.declaration` | Jump to symbol declaration (headers in C) |
 | `gr` | Normal | `vim.lsp.buf.references` | List symbol references across workspace |
@@ -120,6 +121,8 @@ These mappings activate automatically when an LSP attaches to a buffer:
 | `[d` | Normal | `vim.diagnostic.goto_prev` | Jump to previous diagnostic error/warning |
 | `]d` | Normal | `vim.diagnostic.goto_next` | Jump to next diagnostic error/warning |
 | `<Leader>f` | Normal/Visual | `conform.format()` | Format buffer with active formatter |
+| `<C-l>` | Insert/Select | `vim.snippet.jump(1)` | Jump to next native snippet tabstop |
+| `<C-h>` | Insert/Select | `vim.snippet.jump(-1)` | Jump to previous native snippet tabstop |
 
 ---
 
@@ -147,7 +150,7 @@ These mappings activate automatically when an LSP attaches to a buffer:
 | `<Leader>hR` | Normal | `gitsigns.reset_buffer` | Reset all modifications in current buffer |
 | `<Leader>hp` | Normal | `gitsigns.preview_hunk` | Preview diff of current hunk inline |
 | `<Leader>tb` | Normal | `gitsigns.toggle_current_line_blame` | Toggle inline commit author & date blame |
-| `<Leader>td` | Normal | `gitsigns.toggle_deleted` | Toggle display of deleted lines in buffer |
+| `<Leader>tD` | Normal | `gitsigns.toggle_deleted` | Toggle display of deleted lines in buffer (`<Leader>td` is reserved for Dooing checklist) |
 | `<Leader>gd` | Normal | `:DiffviewOpen<CR>` | Open side-by-side Git diffview |
 | `<Leader>gD` | Normal | `:DiffviewClose<CR>` | Close Git diffview |
 | `<Leader>gh` | Normal | `:DiffviewFileHistory %<CR>` | View revision history for current file |
