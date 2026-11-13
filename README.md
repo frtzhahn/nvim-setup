@@ -13,9 +13,9 @@
 - **package manager:** [lazy.nvim](https://github.com/folke/lazy.nvim)
 - **fuzzy finder & telemetry:** [snacks.nvim](https://github.com/folke/snacks.nvim) (snacks.picker, notifier, bigfile)
 - **language servers:** managed by [Mason](https://github.com/williamboman/mason.nvim) and [lspconfig](https://github.com/neovim/nvim-lspconfig)
-- **completion:** [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) with [cmp-cmdline](https://github.com/hrsh7th/cmp-cmdline) for real-time command suggestions
+- **completion:** [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) with [cmp-cmdline](https://github.com/hrsh7th/cmp-cmdline) for real-time command suggestions and native `vim.snippet` expansion (`<C-l>` / `<C-h>`)
 - **formatters:** [conform.nvim](https://github.com/stevearc/conform.nvim) (stylua, prettierd, csharpier)
-- **file explorer:** [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim), [Oil.nvim](https://github.com/stevearc/oil.nvim), and [csharp-explorer.nvim](https://github.com/dtrh95/csharp-explorer.nvim)
+- **file explorer:** [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim), [Oil.nvim](https://github.com/stevearc/oil.nvim), and [easy-dotnet.nvim](https://github.com/GustavEikaas/easy-dotnet.nvim)
 - **statusline:** [Lualine](https://github.com/nvim-lualine/lualine.nvim) with live LSP indicators
 - **quickfix enhancement:** [nvim-bqf](https://github.com/kevinhwang91/nvim-bqf) for floating Treesitter previews
 - **git telemetry & blame:** [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)
