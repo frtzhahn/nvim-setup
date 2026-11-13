@@ -7,14 +7,14 @@ The `<F6>` runner provides rapid compile-and-run capabilities for competitive pr
 ### How It Operates
 
 1. Pressing `<F6>` automatically executes `:silent write` to save any unsaved buffer changes.
-2. It detects the buffer filetype, extracts directory and base filenames, and applies shell escaping via `vim.fn.shellescape`.
+2. It detects the buffer filetype, extracts directory and base filenames, and applies shell escaping via `vim.fn.shellescape` to both source file paths and compiled output binaries (`out_bin`).
 3. It spawns a bottom terminal split (`:botright 12split | terminal <cmd>`) and automatically enters Insert mode (`startinsert`).
 4. You can provide interactive input to `stdin` immediately.
-5. When execution concludes, the terminal window remains open so you can inspect stdout, stderr, and exit codes. Press `<C-\><C-N>:q<CR>` to close.
+5. When execution concludes, the terminal window remains open so you can inspect stdout, stderr, and exit codes. Press `<Esc><Esc>` then `<Esc>` or `q` (or `<C-\><C-N>:q<CR>`) to close.
 
 ### Language Compile Matrix
 
-- **C:** `gcc -Wall -Wextra -Werror -std=c11 -g sample.c -o <base> && ./<base>`
+- **C:** `gcc -Wall -Wextra -std=c11 -g <file> -o <base> && ./<base>`
 - **C++:** `g++ <file> -o <base> && ./<base>`
 - **Java:** `javac <filename> && java <base>`
 - **Python:** `python3 <file>` (or `python <file>` on Windows)
@@ -75,7 +75,7 @@ Replace command-line git diffs with visual side-by-side comparison panels:
   -- NOTE: required for Neovim 0.12 ABI compatibility
   ```
 - **Cycle through tags:** Press `]t` for next todo or `[t` for previous todo.
-- **Workspace Search:** Press `<Leader>st` to search all project todos via Telescope, or `<Leader>xt` to open the full list inside the Trouble drawer.
+- **Workspace Search:** Press `<Leader>st` to search all project todos via `Snacks.picker`, or `<Leader>xt` to open the full list inside the Trouble drawer.
 
 ### Personal Floating Checklist (`dooing`)
 
@@ -96,7 +96,7 @@ Replace command-line git diffs with visual side-by-side comparison panels:
 - `<Leader>dr`: Run .NET project.
 - `<Leader>db`: Build solution or project.
 - `<Leader>dt`: Open floating test runner UI (`viewmode = "float"` with buffer-aware test execution).
-- `<Leader>ds`: Manage .NET User Secrets without leaving Neovim.
+- `<Leader>dS`: Manage .NET User Secrets without leaving Neovim (`<Leader>ds` is reserved for LSP document symbols).
 - `<Leader>do`: Audit outdated NuGet packages across dependencies.
 - `<Leader>dn`: Scaffold new .NET projects, solutions, or items from installed templates.
 
@@ -113,7 +113,7 @@ Replace command-line git diffs with visual side-by-side comparison panels:
 
 ### Cold Startup Telemetry
 
-Cold start time is continuously benchmarked to ensure it remains below 225ms:
+Cold start time is continuously benchmarked against an `< 80ms` operational budget (`~67.7ms` cold / `~67–72ms` warm), achieved by lazy-loading `nvim-lspconfig` (`BufReadPre`/`BufNewFile`), `fidget.nvim` (`LspAttach`), `nvim-dap` (`keys`), `lualine.nvim` and `vim-wakatime` (`VeryLazy`), `barbecue.nvim` (`BufReadPost`/`BufNewFile`), `alpha-nvim` (`VimEnter`), and `roslyn.nvim`, `nvim-dap-cs`, `easy-dotnet.nvim`, and `render-markdown.nvim` (`ft`), alongside bytecode highlight caching (`cache = true`) in `cyberdream.nvim`:
 
 ```bash
 nvim --startuptime /tmp/nvim_startuptime.txt --headless +qa && sort -k2 -n -r /tmp/nvim_startuptime.txt | head -n 25
