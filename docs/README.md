@@ -30,7 +30,7 @@ flowchart TD
             direction TB
             CORE["<b>Neovim Core (LuaJIT 2.1)</b><br/>• Treesitter ABI 15 native syntax parsing<br/>• Embedded Lua LSP client engine<br/>• Modular plugin orchestration (lazy.nvim)"]:::nvim
 
-            BUDGET["<b>Operational Performance Budget</b><br/>• Minimized cold-boot execution time (≤ 225ms)<br/>• Event-driven redraws (no 60Hz polling)<br/>• Strict lazy-loading boundaries (DAP, Diffview, Typr)"]:::nvim
+            BUDGET["<b>Operational Performance Budget</b><br/>• Minimized cold-boot execution time (&lt; 80ms, ~67.7ms cold / ~67–72ms warm)<br/>• Event-driven redraws (no 60Hz polling) & bytecode highlight cache<br/>• Strict lazy-loading boundaries (LSP, DAP, UI chrome, Roslyn, Markdown, WakaTime)"]:::nvim
 
             CORE --- BUDGET
         end
@@ -51,7 +51,7 @@ flowchart TD
 
 ```
 ~/.config/nvim/
-├── init.lua                      # Core initialization, polyfills, lazy setup, runner
+├── init.lua                      # Core initialization, native APIs, lazy setup, runner
 ├── lazy-lock.json                # Locked commit hashes for all installed plugins
 ├── docs/                         # Exhaustive technical documentation suite
 │   ├── README.md                 # System architecture, principles, and directory index
@@ -69,9 +69,9 @@ flowchart TD
             ├── bqf.lua           # Better QuickFix with floating Treesitter previews
             ├── bufferline.lua    # Buffer tabline with LSP diagnostic badges
             ├── cake.lua          # Project terminal task runner (nvzone/volt)
-            ├── cmp.lua           # Autocompletion engine with cmdline support
+            ├── cmp.lua           # Autocompletion engine with cmdline & native vim.snippet
             ├── cord.lua          # Discord Rich Presence with custom status hooks
-            ├── csharp.lua        # Roslyn LSP, .NET compilers, DAP, C# Explorer
+            ├── csharp.lua        # Roslyn LSP, netcoredbg DAP, easy-dotnet.nvim
             ├── dap.lua           # Debug Adapter Protocol engine and UI listeners
             ├── dashboard.lua     # Alpha-nvim startup screen
             ├── diffview.lua      # Side-by-side Git diff and revision history tool
@@ -79,7 +79,6 @@ flowchart TD
             ├── formatting.lua    # Dedicated conform.nvim engine (stylua, prettierd, csharpier)
             ├── gitsigns.lua      # In-buffer git gutter indicators, hunk jumps, and blame
             ├── history.lua       # Clipboard history popup manager
-            ├── indents.lua       # Indent guides specification (dormant reference)
             ├── jdtls.lua         # Eclipse JDTLS Java IDE integration
             ├── live-server.lua   # HTML/Web live server integration
             ├── lsp.lua           # Mason, Mason-LSPConfig, language server options
@@ -93,8 +92,7 @@ flowchart TD
             ├── showkeys.lua      # Active keystroke on-screen display
             ├── snacks.lua        # folke/snacks.nvim (picker, notifier, bigfile, words)
             ├── surround.lua      # Delimiter manipulation and autopairs
-            ├── telescope.lua     # Telescope specification (dormant reference)
-            ├── themes.lua        # Colorscheme selection and catalog
+            ├── themes.lua        # Cyberdream colorscheme with bytecode highlight caching
             ├── tmux.lua          # christoomey/vim-tmux-navigator integration
             ├── todo-comments.lua # Codebase TODO/FIXME highlighter and searcher
             ├── treesitter.lua    # Treesitter syntax highlighting and parsers
@@ -110,9 +108,9 @@ flowchart TD
 ## 3. Core Principles & Safeguards
 
 1. **Separation of Concerns:** Formatting logic (`conform.nvim`) is decoupled from language servers and resides in its own isolated module.
-2. **Deterministic Startup:** Plugins are loaded on specific triggers (`ft`, `cmd`, `keys`, or `event = "VeryLazy"`). Cold boot time remains under 225ms.
+2. **Deterministic Startup:** Plugins are deferred behind strict lazy-loading boundaries (`BufReadPre`/`BufNewFile` for `nvim-lspconfig`, `LspAttach` for `fidget.nvim`, `keys` for `nvim-dap`, `VeryLazy` for `lualine.nvim` and `vim-wakatime`, `BufReadPost`/`BufNewFile` for `barbecue.nvim`, `VimEnter` for `alpha-nvim`, and `ft` for `roslyn.nvim`, `nvim-dap-cs`, `easy-dotnet.nvim`, and `render-markdown.nvim`) paired with bytecode highlight caching (`cache = true` on `cyberdream.nvim`). Cold boot time remains under an `< 80ms` operational budget (`~67.7ms` cold / `~67–72ms` warm).
 3. **Cross-Platform Portability:** Code execution (`<F6>`) uses Neovim's internal split terminal rather than host-specific terminal emulators (Kitty/Foot), ensuring identical behavior on Linux, Windows, and Android (Termux).
-4. **Shell Injection Prevention:** Paths passed to external compiler tools are escaped using `vim.fn.shellescape`.
+4. **Shell Injection Prevention:** Both source file paths and compiled output binaries (`out_bin`) passed to external compiler tools are escaped using `vim.fn.shellescape`.
 5. **Hermetic Bootstrapping:** Bootstrap scripts guarantee Neovim `>= 0.12.0` via internal runtime capability testing, eliminate PATH shadowing traps, enforce non-destructive configuration backups, and safely handle fresh OS installs without interactive manual intervention.
 
 ---
